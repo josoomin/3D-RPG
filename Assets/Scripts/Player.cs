@@ -15,18 +15,17 @@ namespace dreamingcat
         float _rotateSpeed = 100.0f; // 회전 속도
         float _jumppower = 5.0f;
 
-        bool _plane;
+        [SerializeField] bool _plane;
         bool _defand;
+        bool _attack;
 
         Rigidbody _myRigidbody;
-        CapsuleCollider _myCapCol;
 
         Animator _myAni;
 
         void Start()
         {
             _myRigidbody = GetComponent<Rigidbody>();
-            _myCapCol = GetComponent<CapsuleCollider>();
             _myAni = GetComponent<Animator>();
             _attackCol.enabled = false;
             _defandCol.enabled = false;
@@ -59,7 +58,7 @@ namespace dreamingcat
                 Attack();
             }
 
-            if (Input.GetMouseButton(1))
+            if (Input.GetMouseButton(1) && !_attack)
             {
                 Defand();
             }
@@ -89,19 +88,20 @@ namespace dreamingcat
         {
             if (collision.gameObject.CompareTag("Plane"))
             {
-                _myCapCol.enabled = true;
                 _plane = true;
             }
         }
 
         public void Attack()
         {
+            _attack = true;
             _attackCol.enabled = true;
             _myAni.SetTrigger("Attack");
         }
 
         public void NotAttack()
         {
+            _attack = false;
             _attackCol.enabled = false;
         }
 
