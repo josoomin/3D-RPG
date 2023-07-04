@@ -19,17 +19,19 @@ namespace josoomin
             //xRotate = transform.eulerAngles.x + xRotateMove; 
             xRotate = xRotate + xRotateMove;
 
-            xRotate = Mathf.Clamp(xRotate, -90, 90); // À§, ¾Æ·¡ °íÁ¤
+            xRotate = Mathf.Clamp(xRotate, -90, 90); // ï¿½ï¿½, ï¿½Æ·ï¿½ ï¿½ï¿½ï¿½ï¿½
 
-           
 
-            if (xRotate >= _xMaxValue)
+            if (UI_Canvas._talk == false)
             {
-                transform.eulerAngles = new Vector3(xRotate, yRotate, 0);
-            }
-            else
-            {
-                transform.eulerAngles = new Vector3(_xMaxValue, yRotate, 0);
+                if (xRotate >= _xMaxValue)
+                {
+                    transform.eulerAngles = new Vector3(xRotate, yRotate, 0);
+                }
+                else
+                {
+                    transform.eulerAngles = new Vector3(_xMaxValue, yRotate, 0);
+                }
             }
         }
     }

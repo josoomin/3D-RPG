@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace dreamingcat
+namespace josoomin
 {
     public class Player : MonoBehaviour
     {
@@ -37,35 +37,38 @@ namespace dreamingcat
             float v = Input.GetAxis("Vertical");
             //_myCapCol.transform.position = _head.transform.position;
 
-            if (h != 0 || v != 0)
+            if (UI_Canvas._talk == false)
             {
-                Move(h, v);
-                _myAni.SetBool("Walk", true);
-            }
-            else
-            {
-                _myAni.SetBool("Walk", false);
-                _myRigidbody.angularVelocity = new Vector3(0, 0, 0);
-            }
+                if (h != 0 || v != 0)
+                {
+                    Move(h, v);
+                    _myAni.SetBool("Walk", true);
+                }
+                else
+                {
+                    _myAni.SetBool("Walk", false);
+                    _myRigidbody.angularVelocity = new Vector3(0, 0, 0);
+                }
 
-            if (Input.GetKey(KeyCode.Space) && _plane)
-            {
-                Jump();
-            }
+                if (Input.GetKey(KeyCode.Space) && _plane)
+                {
+                    Jump();
+                }
 
-            if (Input.GetMouseButtonDown(0) && !_defand)
-            {
-                Attack();
-            }
+                if (Input.GetMouseButtonDown(0) && !_defand)
+                {
+                    Attack();
+                }
 
-            if (Input.GetMouseButton(1) && !_attack)
-            {
-                Defand();
-            }
+                if (Input.GetMouseButton(1) && !_attack)
+                {
+                    Defand();
+                }
 
-            if (Input.GetMouseButtonUp(1))
-            {
-                NotDefand();
+                if (Input.GetMouseButtonUp(1))
+                {
+                    NotDefand();
+                }
             }
 
         }
