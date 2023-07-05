@@ -19,6 +19,7 @@ namespace josoomin
         bool _F;
 
         public static bool _talk;
+        public static bool _playerEnter;
 
         private void Awake()
         {
@@ -47,7 +48,7 @@ namespace josoomin
 
         void CloseNPC()
         {
-            if (Vector3.Distance(_player.transform.position, _npc.transform.position) < contactDistance)
+            if (_playerEnter == true)
             {
                 _fKey.SetActive(true);
                 _F = true;

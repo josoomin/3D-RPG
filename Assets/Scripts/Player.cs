@@ -12,7 +12,7 @@ namespace josoomin
         public GameObject _head;
 
         float _speed = 10.0f;
-        float _rotateSpeed = 100.0f; // 회전 속도
+        float _rotateSpeed = 300.0f; // 회전 속도
         float _jumppower = 5.0f;
 
         [SerializeField] bool _plane;

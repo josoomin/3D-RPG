@@ -30,8 +30,8 @@ namespace josoomin
 
         void FollowTarget()
         {
-            if (Vector3.Distance(transform.position, target.position) > contactDistance && follow)
-                transform.position = Vector3.MoveTowards(transform.position, transform.position, moveSpeed * Time.deltaTime);
+            if (Vector3.Distance(transform.position, target.position) < contactDistance /*follow*/)
+                transform.position = Vector3.MoveTowards(transform.position, target.position, moveSpeed * Time.deltaTime);
 
             else
                 rb.velocity = Vector2.zero;
