@@ -8,6 +8,9 @@ namespace josoomin
     {
         Rigidbody rb;
         Transform target;
+        Animator _myAni;
+
+        BoxCollider _myBoxCol;
 
         //추격 속도
         [SerializeField] [Range(1f, 4f)] float moveSpeed = 3f;
@@ -15,12 +18,14 @@ namespace josoomin
         //근접 거리
         [SerializeField] [Range(0f, 3f)] float contactDistance = 3f;
 
-        bool follow = false;
+        bool follow = true;
 
         void Start()
         {
             rb = GetComponent<Rigidbody>();
             target = GameObject.FindGameObjectWithTag("Player").GetComponent<Transform>();
+            _myAni = GetComponent<Animator>();
+            _myBoxCol = GetComponent<BoxCollider>();
         }
 
         void Update()
@@ -30,21 +35,37 @@ namespace josoomin
 
         void FollowTarget()
         {
-            if (Vector3.Distance(transform.position, target.position) < contactDistance /*follow*/)
+            float distance = Vector3.Distance(transform.position, target.position);
+
+            if (distance < contactDistance && distance > 1f/*&& follow*/)
+            {
                 transform.position = Vector3.MoveTowards(transform.position, target.position, moveSpeed * Time.deltaTime);
+                transform.LookAt(target);
+                _myAni.SetBool("Run Forward", true);
+            }
+
+            else if (distance > 1f)
+            {
+
+            }
 
             else
+            {
                 rb.velocity = Vector2.zero;
+                _myAni.SetBool("Run Forward", false);
+            }
         }
 
         private void OnTriggerEnter(Collider other)
         {
-            follow = true;
+            if (other.tag == "Player")
+                follow = false;
         }
 
         private void OnTriggerExit(Collider other)
         {
-            follow = false;
+            if (other.tag == "Player")
+                follow = true;
         }
     }
 }
