@@ -58,7 +58,7 @@ namespace josoomin
                     _myRigidbody.angularVelocity = new Vector3(0, 0, 0);
                 }
 
-                if (Input.GetKey(KeyCode.Space) && _plane)
+                if (Input.GetKeyDown(KeyCode.Space) && _plane)
                 {
                     Jump();
                 }
@@ -77,11 +77,11 @@ namespace josoomin
                 {
                     NotDefand();
                 }
-            }
 
-            if (_hp <= 0 && !_die)
-            {
-                Die();
+                if (_hp <= 0)
+                {
+                    Die();
+                }
             }
         }
         public void Move(float h, float v)
@@ -96,7 +96,6 @@ namespace josoomin
         {
             _myAni.SetTrigger("Jump");
             _myRigidbody.AddForce(Vector3.up * _jumppower, ForceMode.Impulse);
-            _plane = false;
         }
 
         void OnCollisionEnter(Collision collision)
@@ -104,6 +103,14 @@ namespace josoomin
             if (collision.gameObject.CompareTag("Plane"))
             {
                 _plane = true;
+            }
+        }
+
+        private void OnCollisionExit(Collision collision)
+        {
+            if (collision.gameObject.CompareTag("Plane"))
+            {
+                _plane = false;
             }
         }
 

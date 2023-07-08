@@ -11,13 +11,18 @@ namespace josoomin
         Animator _myAni;
 
         BoxCollider _myBoxCol;
-        public BoxCollider _myTrigger;
+        public BoxCollider _myAttackTrigger;
+
+        public float _hp;
+
+        bool _takeDamage;
+        bool _die;
 
         //추격 속도
-        [SerializeField] [Range(1f, 4f)] float moveSpeed = 3f;
+        [SerializeField] [Range(1f, 4f)] float moveSpeed = 1f;
 
         //근접 거리
-        [SerializeField] [Range(0f, 3f)] float contactDistance = 3f;
+        [SerializeField] [Range(0f, 10f)] float contactDistance = 1f;
 
         bool follow = true;
         float _attackLange = 0.75f;
@@ -28,27 +33,35 @@ namespace josoomin
             target = GameObject.FindGameObjectWithTag("Player").GetComponent<Transform>();
             _myAni = GetComponent<Animator>();
             _myBoxCol = GetComponent<BoxCollider>();
-            _myTrigger.enabled = false;
+            _myAttackTrigger.enabled = false;
+
+            _hp = 50f;
+            _die = false;
         }
 
         void Update()
         {
-            FollowTarget();
+            if (!_die && !_takeDamage)
+            {
+                FollowTarget();
+
+                if (_hp <= 0)
+                {
+                    Die();
+                }
+            }
         }
 
         void FollowTarget()
         {
             float distance = Vector3.Distance(transform.position, target.position);
+            _myAttackTrigger.enabled = false;
 
             if (distance < contactDistance && distance > _attackLange)
             {
                 transform.position = Vector3.MoveTowards(transform.position, target.position, moveSpeed * Time.deltaTime);
                 _myAni.SetBool("Run Forward", true);
-
-                if (target.GetComponent<Player>()._plane == false)
-                {
-                    transform.LookAt(target);
-                }
+                transform.LookAt(target);
             }
 
             else if (distance < _attackLange)
@@ -66,18 +79,38 @@ namespace josoomin
 
         void OnAttackCol()
         {
-            _myTrigger.enabled = true;
+            _myAttackTrigger.enabled = true;
         }
 
         void OffAttackCol()
         {
-            _myTrigger.enabled = false;
+            _myAttackTrigger.enabled = false;
         }
 
         private void OnTriggerEnter(Collider other)
         {
             if (other.tag == "Player")
                 other.GetComponent<Player>()._hp -= 5;
+        }
+
+        void Die()
+        {
+            _die = true;
+            _myAni.SetTrigger("Die");
+            _myAttackTrigger.enabled = false;
+        }
+
+        public void TakeDamage(float damage)
+        {
+            _hp -= damage;
+            _takeDamage = true;
+            _myAni.SetTrigger("Take Damage");
+            _myAttackTrigger.enabled = false;
+        }
+
+        public void NoTakeDamage()
+        {
+            _takeDamage = false;
         }
     }
 }
