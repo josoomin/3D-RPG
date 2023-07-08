@@ -11,6 +11,7 @@ namespace josoomin
         Animator _myAni;
 
         BoxCollider _myBoxCol;
+        public BoxCollider _myTrigger;
 
         //추격 속도
         [SerializeField] [Range(1f, 4f)] float moveSpeed = 3f;
@@ -19,6 +20,7 @@ namespace josoomin
         [SerializeField] [Range(0f, 3f)] float contactDistance = 3f;
 
         bool follow = true;
+        float _attackLange = 0.75f;
 
         void Start()
         {
@@ -26,6 +28,7 @@ namespace josoomin
             target = GameObject.FindGameObjectWithTag("Player").GetComponent<Transform>();
             _myAni = GetComponent<Animator>();
             _myBoxCol = GetComponent<BoxCollider>();
+            _myTrigger.enabled = false;
         }
 
         void Update()
@@ -37,16 +40,21 @@ namespace josoomin
         {
             float distance = Vector3.Distance(transform.position, target.position);
 
-            if (distance < contactDistance && distance > 1f/*&& follow*/)
+            if (distance < contactDistance && distance > _attackLange)
             {
                 transform.position = Vector3.MoveTowards(transform.position, target.position, moveSpeed * Time.deltaTime);
-                transform.LookAt(target);
                 _myAni.SetBool("Run Forward", true);
+
+                if (target.GetComponent<Player>()._plane == false)
+                {
+                    transform.LookAt(target);
+                }
             }
 
-            else if (distance > 1f)
+            else if (distance < _attackLange)
             {
-
+                _myAni.SetTrigger("Attack 02");
+                _myAni.SetBool("Run Forward", false);
             }
 
             else
@@ -56,16 +64,20 @@ namespace josoomin
             }
         }
 
+        void OnAttackCol()
+        {
+            _myTrigger.enabled = true;
+        }
+
+        void OffAttackCol()
+        {
+            _myTrigger.enabled = false;
+        }
+
         private void OnTriggerEnter(Collider other)
         {
             if (other.tag == "Player")
-                follow = false;
-        }
-
-        private void OnTriggerExit(Collider other)
-        {
-            if (other.tag == "Player")
-                follow = true;
+                other.GetComponent<Player>()._hp -= 5;
         }
     }
 }

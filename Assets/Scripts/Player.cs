@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace josoomin
 {
@@ -10,14 +11,18 @@ namespace josoomin
         public BoxCollider _defandCol;
 
         public GameObject _head;
+        public Slider _hpBar;
 
         float _speed = 10.0f;
         float _rotateSpeed = 300.0f; // 회전 속도
         float _jumppower = 5.0f;
 
-        [SerializeField] bool _plane;
+        public float _hp;
+
+        public bool _plane;
         bool _defand;
         bool _attack;
+        bool _die;
 
         Rigidbody _myRigidbody;
 
@@ -29,15 +34,18 @@ namespace josoomin
             _myAni = GetComponent<Animator>();
             _attackCol.enabled = false;
             _defandCol.enabled = false;
+            _die = false;
+            _hp = 100;
         }
 
         void Update()
         {
+            _hpBar.value = _hp;
             float h = Input.GetAxis("Horizontal");
             float v = Input.GetAxis("Vertical");
             //_myCapCol.transform.position = _head.transform.position;
 
-            if (UI_Canvas._talk == false)
+            if (UI_Canvas._talk == false && !_die)
             {
                 if (h != 0 || v != 0)
                 {
@@ -71,6 +79,10 @@ namespace josoomin
                 }
             }
 
+            if (_hp <= 0 && !_die)
+            {
+                Die();
+            }
         }
         public void Move(float h, float v)
         {
@@ -120,6 +132,12 @@ namespace josoomin
             _defand = false;
             _defandCol.enabled = false;
             _myAni.SetBool("Defand", false);
+        }
+
+        public void Die()
+        {
+            _myAni.SetTrigger("Die");
+            _die = true;
         }
     }
 }
