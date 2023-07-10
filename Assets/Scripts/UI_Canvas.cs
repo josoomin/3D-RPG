@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace josoomin
 {
@@ -10,16 +11,14 @@ namespace josoomin
 
         [SerializeField] GameObject _fKey;
         [SerializeField] GameObject _talkWindow;
-
-        [SerializeField] GameObject _player;
-        [SerializeField] GameObject _npc;
+        public Text _fKeyText;
 
         [SerializeField] [Range(0f, 3f)] float contactDistance = 1f;
 
-        bool _F;
+        public bool _closeNPC;
+        public bool _closeKey;
 
-        public static bool _talk;
-        public static bool _playerEnter;
+        public bool _talk;
 
         private void Awake()
         {
@@ -28,39 +27,45 @@ namespace josoomin
 
         void Start()
         {
-            _player = GameObject.FindGameObjectWithTag("Player").gameObject;
-            _npc = GameObject.FindGameObjectWithTag("NPC").gameObject;
             _fKey = transform.Find("TalkKey").gameObject;
             _talkWindow = transform.Find("TalkWindow").gameObject;
+            _fKeyText = transform.Find("TalkKey/Text").GetComponent<Text>();
 
             _fKey.SetActive(false);
             _talkWindow.SetActive(false);
         }
 
-        void Update()
+        public void CloseNPC(bool Player)
         {
-            CloseNPC();
-            if (_F && Input.GetKeyDown(KeyCode.F) && _talk == false)
+            if (Player == true)
             {
-                ActiveTalkWindow();
-            }
-        }
-
-        void CloseNPC()
-        {
-            if (_playerEnter == true)
-            {
+                _fKeyText.text = "대화";
                 _fKey.SetActive(true);
-                _F = true;
+                _closeNPC = true;
             }
-            else
+            else if (Player == false)
             {
                 _fKey.SetActive(false);
-                _F = false;
+                _closeNPC = false;
             }
         }
 
-        void ActiveTalkWindow()
+        public void CloseKey(bool Player)
+        {
+            if (Player == true)
+            {
+                _fKeyText.text = "줍기";
+                _fKey.SetActive(true);
+                _closeKey = true;
+            }
+            else if(Player == false)
+            {
+                _fKey.SetActive(false);
+                _closeKey = false;
+            }
+        }
+
+        public void ActiveTalkWindow()
         {
             _talk = true;
             _talkWindow.SetActive(true);

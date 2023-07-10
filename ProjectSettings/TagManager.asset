@@ -8,6 +8,7 @@ TagManager:
   - Fire
   - NPC
   - Monster
+  - Key
   layers:
   - Default
   - TransparentFX

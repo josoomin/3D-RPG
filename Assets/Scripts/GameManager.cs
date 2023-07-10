@@ -2,26 +2,29 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-
-class Player
+namespace josoomin
 {
-    float HP;
-    float ATK;
-    float DEF;
-    List<int> ITEM;
-}
 
-public class GameManager : MonoBehaviour
-{
-    // Start is called before the first frame update
-    void Start()
+    public class GameManager : MonoBehaviour
     {
-        
-    }
+        public List<GameObject> _sponePointList;
+        public List<GameObject> _monsterList;
 
-    // Update is called once per frame
-    void Update()
-    {
-        
+        public GameObject _monster;
+
+        void Start()
+        {
+            for (int i = 0; i < _sponePointList.Count; i++)
+            {
+                Instantiate(_monster);
+                _monsterList.Add(_monster);
+                _monsterList[i].transform.position = _sponePointList[i].transform.position;
+            }
+        }
+
+        void Update()
+        {
+
+        }
     }
 }

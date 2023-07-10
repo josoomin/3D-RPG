@@ -7,26 +7,28 @@ namespace josoomin
 {
     public class Player : MonoBehaviour
     {
-        public BoxCollider _attackCol;
-        public BoxCollider _defandCol;
+        public GameObject _closeObject; // 닿고 있는 오브젝트
 
-        public GameObject _head;
-        public Slider _hpBar;
+        public BoxCollider _attackCol; // 내 검 콜라이더 
+        public BoxCollider _defandCol; // 내 방패 콜라이더
 
-        float _speed = 10.0f;
-        float _rotateSpeed = 300.0f; // 회전 속도
-        float _jumppower = 5.0f;
+        public Slider _hpBar; // 내 채력바 UI
+        public float _hp; // 내 체력
 
-        public float _hp;
+        float _speed = 10.0f; // 내 이동 속도
+        float _rotateSpeed = 300.0f; // 내 회전 속도
+        float _jumppower = 5.0f; // 내 점프 파워
 
-        public bool _plane;
-        bool _defand;
-        bool _attack;
-        bool _die;
+        [SerializeField] bool _plane; // 현재 바닥에 닿았는지 유무 확인
+        bool _defand; // 방어 중인지 확인
+        bool _attack; // 내가 공격 중 인지
+        bool _die; // 내가 죽었는지
 
-        Rigidbody _myRigidbody;
+        public List<string> _inven; // 인벤토리
 
-        Animator _myAni;
+        Rigidbody _myRigidbody; // 내 리지드바디
+
+        Animator _myAni; // 내 애니메이터
 
         void Start()
         {
@@ -43,9 +45,8 @@ namespace josoomin
             _hpBar.value = _hp;
             float h = Input.GetAxis("Horizontal");
             float v = Input.GetAxis("Vertical");
-            //_myCapCol.transform.position = _head.transform.position;
 
-            if (UI_Canvas._talk == false && !_die)
+            if (UI_Canvas.I._talk == false && !_die)
             {
                 if (h != 0 || v != 0)
                 {
@@ -82,12 +83,23 @@ namespace josoomin
                 {
                     Die();
                 }
+
+                if (Input.GetKeyDown(KeyCode.F))
+                {
+                    if (UI_Canvas.I._closeNPC)
+                    {
+                        UI_Canvas.I.ActiveTalkWindow();
+                    }
+
+                    if (UI_Canvas.I._closeKey)
+                    {
+                        _closeObject.GetComponent<Key>().DestroyMe(gameObject);
+                    }
+                }
             }
         }
         public void Move(float h, float v)
         {
-            Vector3 dir = new Vector3(h, 0, v); // new Vector3(h, 0, v)가 자주 쓰이게 되었으므로 dir이라는 변수에 넣고 향후 편하게 사용할 수 있게 함
-
             transform.Translate(new Vector3(0, 0, v * _speed) * Time.deltaTime);
             transform.Rotate(new Vector3(0, h * _rotateSpeed, 0) * Time.deltaTime);
         }
@@ -98,7 +110,7 @@ namespace josoomin
             _myRigidbody.AddForce(Vector3.up * _jumppower, ForceMode.Impulse);
         }
 
-        void OnCollisionEnter(Collision collision)
+        void OnCollisionStay (Collision collision)
         {
             if (collision.gameObject.CompareTag("Plane"))
             {

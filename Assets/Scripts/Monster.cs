@@ -6,17 +6,17 @@ namespace josoomin
 {
     public class Monster : MonoBehaviour
     {
-        Rigidbody rb;
-        Transform target;
-        Animator _myAni;
+        Rigidbody _myRigidbody; // 내 리지드 바디
+        Transform target; // 플레이어
+        Animator _myAni; // 내 애니메이터
 
-        BoxCollider _myBoxCol;
-        public BoxCollider _myAttackTrigger;
+        public BoxCollider _myAttackTrigger; // 내 공격 콜라이더
+        float _attackLange = 0.75f; // 내 공격시전범위
 
-        public float _hp;
+        public float _hp; // 내 체력
 
-        bool _takeDamage;
-        bool _die;
+        bool _takeDamage; // 내가 공격을 받는 중인지
+        bool _die; // 내가 죽었는지
 
         //추격 속도
         [SerializeField] [Range(1f, 4f)] float moveSpeed = 1f;
@@ -24,15 +24,11 @@ namespace josoomin
         //근접 거리
         [SerializeField] [Range(0f, 10f)] float contactDistance = 1f;
 
-        bool follow = true;
-        float _attackLange = 0.75f;
-
         void Start()
         {
-            rb = GetComponent<Rigidbody>();
+            _myRigidbody = GetComponent<Rigidbody>();
             target = GameObject.FindGameObjectWithTag("Player").GetComponent<Transform>();
             _myAni = GetComponent<Animator>();
-            _myBoxCol = GetComponent<BoxCollider>();
             _myAttackTrigger.enabled = false;
 
             _hp = 50f;
@@ -72,7 +68,7 @@ namespace josoomin
 
             else
             {
-                rb.velocity = Vector2.zero;
+                _myRigidbody.velocity = Vector2.zero;
                 _myAni.SetBool("Run Forward", false);
             }
         }

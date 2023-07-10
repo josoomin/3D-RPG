@@ -6,22 +6,11 @@ namespace josoomin
 {
     public class Sword : MonoBehaviour
     {
-        void Start()
-        {
-            
-        }
-
-        void Update()
-        {
-            
-        }
-
         private void OnTriggerEnter(Collider other)
         {
-            Monster _monsterC = other.GetComponent<Monster>();
-
-            if (other.tag == "Monster")
+            if (other.CompareTag("Monster"))
             {
+                Monster _monsterC = other.GetComponent<Monster>();
                 _monsterC.TakeDamage(10f);
             }
         }

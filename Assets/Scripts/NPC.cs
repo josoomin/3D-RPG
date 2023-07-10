@@ -6,32 +6,20 @@ namespace josoomin
 {
     public class NPC : MonoBehaviour
     {
-        // Start is called before the first frame update
-        void Start()
-        {
-
-        }
-
-        // Update is called once per frame
-        void Update()
-        {
-
-        }
-
         private void OnCollisionEnter(Collision collision)
         {
-            if (collision.gameObject.tag == "Player")
+            if (collision.gameObject.CompareTag("Player"))
             {
-                UI_Canvas._playerEnter = true;
+                UI_Canvas.I.CloseNPC(true);
             }
         }
 
 
         private void OnCollisionExit(Collision collision)
         {
-            if (collision.gameObject.tag == "Player")
+            if (collision.gameObject.CompareTag("Player"))
             {
-                UI_Canvas._playerEnter = false;
+                UI_Canvas.I.CloseNPC(false);
             }
         }
     }

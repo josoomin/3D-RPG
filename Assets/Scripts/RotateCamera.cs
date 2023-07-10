@@ -22,7 +22,7 @@ namespace josoomin
             xRotate = Mathf.Clamp(xRotate, -90, 90); // ��, �Ʒ� ����
 
 
-            if (UI_Canvas._talk == false)
+            if (UI_Canvas.I._talk == false)
             {
                 if (xRotate >= _xMaxValue)
                 {
