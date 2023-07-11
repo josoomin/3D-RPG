@@ -13,7 +13,9 @@ namespace josoomin
         public BoxCollider _defandCol; // 내 방패 콜라이더
 
         public Slider _hpBar; // 내 채력바 UI
+        public Text _hpText; // 내 체력 표시 택스트
         public float _hp; // 내 체력
+        public float _maxHp = 100; // 내 최대 체력
 
         float _speed = 10.0f; // 내 이동 속도
         float _rotateSpeed = 300.0f; // 내 회전 속도
@@ -37,7 +39,8 @@ namespace josoomin
             _attackCol.enabled = false;
             _defandCol.enabled = false;
             _die = false;
-            _hp = 100;
+            _hp = _maxHp;
+            _hpText.text = (_hp + "/" + _maxHp);
         }
 
         void Update()
@@ -95,6 +98,11 @@ namespace josoomin
                     {
                         _closeObject.GetComponent<Key>().DestroyMe(gameObject);
                     }
+
+                    if (UI_Canvas.I._closeTreasureBox)
+                    {
+                        GetTreasureBox();
+                    }
                 }
             }
         }
@@ -126,6 +134,25 @@ namespace josoomin
             }
         }
 
+        void GetTreasureBox()
+        {
+            for (int i = 0; i < _inven.Count; i++)
+            {
+                if (_inven[i] == "Key")
+                {
+                    _inven.RemoveAt(i);
+                    _closeObject.GetComponent<TreasureBox>().OpenMe(gameObject);
+                    break;
+                }
+
+                else
+                {
+                    UI_Canvas.I.ActiveNoKey();
+                    break;
+                }
+            }
+        }
+
         public void Attack()
         {
             _attack = true;
@@ -151,6 +178,13 @@ namespace josoomin
             _defand = false;
             _defandCol.enabled = false;
             _myAni.SetBool("Defand", false);
+        }
+
+        public void TakeDamage(float Damage)
+        {
+            _myAni.SetTrigger("TakeDamage");
+            _hp -= Damage;
+            _hpText.text = (_hp + "/" + _maxHp);
         }
 
         public void Die()

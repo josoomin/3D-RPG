@@ -86,7 +86,7 @@ namespace josoomin
         private void OnTriggerEnter(Collider other)
         {
             if (other.tag == "Player")
-                other.GetComponent<Player>()._hp -= 5;
+                other.GetComponent<Player>().TakeDamage(5f);
         }
 
         void Die()

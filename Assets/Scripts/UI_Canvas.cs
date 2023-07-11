@@ -9,14 +9,18 @@ namespace josoomin
     {
         public static UI_Canvas I;
 
+        Text _noKeyText;
+        Text _fKeyText;
+
         [SerializeField] GameObject _fKey;
         [SerializeField] GameObject _talkWindow;
-        public Text _fKeyText;
+        [SerializeField] GameObject _questWindow;
 
         [SerializeField] [Range(0f, 3f)] float contactDistance = 1f;
 
         public bool _closeNPC;
         public bool _closeKey;
+        public bool _closeTreasureBox;
 
         public bool _talk;
 
@@ -29,10 +33,14 @@ namespace josoomin
         {
             _fKey = transform.Find("TalkKey").gameObject;
             _talkWindow = transform.Find("TalkWindow").gameObject;
+            _questWindow = transform.Find("QuestWindow").gameObject;
             _fKeyText = transform.Find("TalkKey/Text").GetComponent<Text>();
+            _noKeyText = transform.Find("NoKeyText").GetComponent<Text>();
 
             _fKey.SetActive(false);
             _talkWindow.SetActive(false);
+            _questWindow.SetActive(false);
+            _noKeyText.enabled = false;
         }
 
         public void CloseNPC(bool Player)
@@ -65,16 +73,59 @@ namespace josoomin
             }
         }
 
+        public void CloseTreasureBox(bool Player)
+        {
+            if (Player == true)
+            {
+                _fKeyText.text = "열기";
+                _fKey.SetActive(true);
+                _closeTreasureBox = true;
+            }
+            else if (Player == false)
+            {
+                _fKey.SetActive(false);
+                _closeTreasureBox = false;
+            }
+        }
+
+        public void ActiveNoKey()
+        { 
+            StartCoroutine(FadeAway());
+        }
+
+        IEnumerator FadeAway()
+        {
+            _noKeyText.enabled = true;
+            yield return new WaitForSeconds(1);
+            while (_noKeyText.color.a > 0)
+            {
+                var color = _noKeyText.color;
+                //color.a is 0 to 1. So .5*time.deltaTime will take 2 seconds to fade out
+                color.a -= (.5f * Time.deltaTime);
+
+                _noKeyText.color = color;
+                //wait for a frame
+                yield return null;
+            }
+            _noKeyText.enabled = false;
+        }
+
         public void ActiveTalkWindow()
         {
             _talk = true;
             _talkWindow.SetActive(true);
         }
 
+        public void ActiveQuestWindow()
+        {
+            _questWindow.SetActive(true);
+        }
+
         public void DeActiveTalkWindow()
         {
             _talk = false;
             _talkWindow.SetActive(false);
+            _questWindow.SetActive(false);
         }
     }
 }
