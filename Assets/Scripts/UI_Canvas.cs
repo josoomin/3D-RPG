@@ -9,7 +9,7 @@ namespace josoomin
     {
         public static UI_Canvas I;
 
-        Text _noKeyText;
+        Text _alarmText;
         Text _fKeyText;
 
         [SerializeField] GameObject _fKey;
@@ -21,6 +21,7 @@ namespace josoomin
         public bool _closeNPC;
         public bool _closeKey;
         public bool _closeTreasureBox;
+        public bool _closeRock;
 
         public bool _talk;
 
@@ -35,79 +36,78 @@ namespace josoomin
             _talkWindow = transform.Find("TalkWindow").gameObject;
             _questWindow = transform.Find("QuestWindow").gameObject;
             _fKeyText = transform.Find("TalkKey/Text").GetComponent<Text>();
-            _noKeyText = transform.Find("NoKeyText").GetComponent<Text>();
+            _alarmText = transform.Find("AlarmText").GetComponent<Text>();
 
             _fKey.SetActive(false);
             _talkWindow.SetActive(false);
             _questWindow.SetActive(false);
-            _noKeyText.enabled = false;
+            _alarmText.enabled = false;
         }
 
-        public void CloseNPC(bool Player)
+        public void CloseMapObject(string _object, bool Player)
         {
             if (Player == true)
             {
-                _fKeyText.text = "대화";
+                if (_object == "Key")
+                {
+                    _fKeyText.text = "줍기";
+                    _closeKey = true;
+                }
+
+                else if (_object == "TreasureBox")
+                {
+                    _fKeyText.text = "열기";
+                    _closeTreasureBox = true;
+                }
+
+                else if (_object == "NPC")
+                {
+                    _fKeyText.text = "대화";
+                    _closeNPC = true;
+                }
+
+                else if (_object == "Rock")
+                {
+                    _fKeyText.text = "파괴";
+                    _closeRock = true;
+                }
+                
                 _fKey.SetActive(true);
-                _closeNPC = true;
             }
+
             else if (Player == false)
-            {
-                _fKey.SetActive(false);
-                _closeNPC = false;
-            }
-        }
-
-        public void CloseKey(bool Player)
-        {
-            if (Player == true)
-            {
-                _fKeyText.text = "줍기";
-                _fKey.SetActive(true);
-                _closeKey = true;
-            }
-            else if(Player == false)
             {
                 _fKey.SetActive(false);
                 _closeKey = false;
-            }
-        }
-
-        public void CloseTreasureBox(bool Player)
-        {
-            if (Player == true)
-            {
-                _fKeyText.text = "열기";
-                _fKey.SetActive(true);
-                _closeTreasureBox = true;
-            }
-            else if (Player == false)
-            {
-                _fKey.SetActive(false);
                 _closeTreasureBox = false;
+                _closeNPC = false;
+                _closeRock = false;
             }
         }
 
-        public void ActiveNoKey()
-        { 
+        public void ActiveText(string text)
+        {
+            _alarmText.text = text;
             StartCoroutine(FadeAway());
         }
 
         IEnumerator FadeAway()
         {
-            _noKeyText.enabled = true;
-            yield return new WaitForSeconds(1);
-            while (_noKeyText.color.a > 0)
-            {
-                var color = _noKeyText.color;
-                //color.a is 0 to 1. So .5*time.deltaTime will take 2 seconds to fade out
-                color.a -= (.5f * Time.deltaTime);
+            var color = _alarmText.color;
 
-                _noKeyText.color = color;
+            _alarmText.enabled = true;
+            yield return new WaitForSeconds(1);
+            while (_alarmText.color.a > 0)
+            {
+                //color.a is 0 to 1. So .5*time.deltaTime will take 2 seconds to fade out
+                color.a -= (.05f * Time.deltaTime);
+
+                _alarmText.color = color;
                 //wait for a frame
-                yield return null;
+                //yield return null;
             }
-            _noKeyText.enabled = false;
+
+            _alarmText.enabled = false;
         }
 
         public void ActiveTalkWindow()

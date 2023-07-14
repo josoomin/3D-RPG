@@ -8,6 +8,7 @@ namespace josoomin
     public class Player : MonoBehaviour
     {
         public GameObject _closeObject; // 닿고 있는 오브젝트
+        public GameObject _reSponePoint; // 떨어지면 다시 스폰되는 위치
 
         public BoxCollider _attackCol; // 내 검 콜라이더 
         public BoxCollider _defandCol; // 내 방패 콜라이더
@@ -96,14 +97,19 @@ namespace josoomin
 
                     if (UI_Canvas.I._closeKey)
                     {
-                        _closeObject.GetComponent<Key>().DestroyMe(gameObject);
+                        _closeObject.GetComponent<Key>().ActiveObject(gameObject);
                     }
 
-                    if (UI_Canvas.I._closeTreasureBox)
+                    if (UI_Canvas.I._closeTreasureBox || UI_Canvas.I._closeRock)
                     {
-                        GetTreasureBox();
+                        InteractionObject();
                     }
                 }
+            }
+
+            if (transform.position.y <= -10)
+            {
+                PlayerReSpone();
             }
         }
         public void Move(float h, float v)
@@ -134,21 +140,37 @@ namespace josoomin
             }
         }
 
-        void GetTreasureBox()
+        void InteractionObject()
         {
-            for (int i = 0; i < _inven.Count; i++)
+            if (_closeObject.name == "TreasureBox")
             {
-                if (_inven[i] == "Key")
+                if (_inven.Contains("Key"))
                 {
-                    _inven.RemoveAt(i);
-                    _closeObject.GetComponent<TreasureBox>().OpenMe(gameObject);
-                    break;
+                    _inven.Remove("Key");
+                    UI_Canvas.I.ActiveText("망치를 얻었습니다.");
+                    _closeObject.GetComponent<TreasureBox>().ActiveObject(gameObject);
                 }
 
-                else
+                else if (!_inven.Contains("Key"))
                 {
-                    UI_Canvas.I.ActiveNoKey();
-                    break;
+                    UI_Canvas.I.ActiveText("열쇠가 없습니다.");
+                    return;
+                }
+            }
+
+            else if (_closeObject.name == "Rock")
+            {
+                if (_inven.Contains("망치"))
+                {
+                    _inven.Remove("망치");
+                    UI_Canvas.I.ActiveText("바위를 부쉈습니다.");
+                    _closeObject.GetComponent<Rock>().ActiveObject(gameObject);
+                }
+
+                else if (!_inven.Contains("망치"))
+                {
+                    UI_Canvas.I.ActiveText("망치가 없습니다.");
+                    return;
                 }
             }
         }
@@ -185,6 +207,12 @@ namespace josoomin
             _myAni.SetTrigger("TakeDamage");
             _hp -= Damage;
             _hpText.text = (_hp + "/" + _maxHp);
+        }
+
+        void PlayerReSpone()
+        {
+            TakeDamage(10);
+            transform.position = _reSponePoint.transform.position;
         }
 
         public void Die()
