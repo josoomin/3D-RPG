@@ -9,6 +9,7 @@ TagManager:
   - NPC
   - Monster
   - Key
+  - QuestButton
   layers:
   - Default
   - TransparentFX

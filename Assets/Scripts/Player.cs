@@ -15,14 +15,15 @@ namespace josoomin
 
         public Slider _hpBar; // 내 채력바 UI
         public Text _hpText; // 내 체력 표시 택스트
-        public float _hp; // 내 체력
-        public float _maxHp = 100; // 내 최대 체력
 
-        float _speed = 10.0f; // 내 이동 속도
-        float _rotateSpeed = 300.0f; // 내 회전 속도
+        float _hp; // 내 체력
+        float _maxHp = 100; // 내 최대 체력
+
+        float _speed = 10f; // 내 이동 속도
+        float _rotateSpeed = 100.0f; // 내 회전 속도
         float _jumppower = 5.0f; // 내 점프 파워
 
-        [SerializeField] bool _plane; // 현재 바닥에 닿았는지 유무 확인
+        bool _plane; // 현재 바닥에 닿았는지 유무 확인
         bool _defand; // 방어 중인지 확인
         bool _attack; // 내가 공격 중 인지
         bool _die; // 내가 죽었는지
@@ -33,6 +34,8 @@ namespace josoomin
 
         Animator _myAni; // 내 애니메이터
 
+        private Vector3 dir = Vector3.zero;
+
         void Start()
         {
             _myRigidbody = GetComponent<Rigidbody>();
@@ -41,28 +44,21 @@ namespace josoomin
             _defandCol.enabled = false;
             _die = false;
             _hp = _maxHp;
-            _hpText.text = (_hp + "/" + _maxHp);
         }
 
         void Update()
         {
             _hpBar.value = _hp;
-            float h = Input.GetAxis("Horizontal");
-            float v = Input.GetAxis("Vertical");
+            _hpText.text = (_hp + "/" + _maxHp);
+            //float h = Input.GetAxisRaw("Horizontal");
+            //float v = Input.GetAxisRaw("Vertical");
+
+            dir.x = Input.GetAxis("Horizontal");
+            dir.z = Input.GetAxis("Vertical");
+            dir.Normalize();
 
             if (UI_Canvas.I._talk == false && !_die)
             {
-                if (h != 0 || v != 0)
-                {
-                    Move(h, v);
-                    _myAni.SetBool("Walk", true);
-                }
-                else
-                {
-                    _myAni.SetBool("Walk", false);
-                    _myRigidbody.angularVelocity = new Vector3(0, 0, 0);
-                }
-
                 if (Input.GetKeyDown(KeyCode.Space) && _plane)
                 {
                     Jump();
@@ -81,6 +77,11 @@ namespace josoomin
                 if (Input.GetMouseButtonUp(1))
                 {
                     NotDefand();
+                }
+
+                if (transform.position.y <= -10)
+                {
+                    PlayerReSpone();
                 }
 
                 if (_hp <= 0)
@@ -106,16 +107,36 @@ namespace josoomin
                     }
                 }
             }
+        }
 
-            if (transform.position.y <= -10)
+        private void FixedUpdate()
+        {
+            if (UI_Canvas.I._talk == false && !_die)
             {
-                PlayerReSpone();
+                if (dir != Vector3.zero)
+                {
+                    Move();
+                    _myAni.SetBool("Walk", true);
+                }
+                else
+                {
+                    _myAni.SetBool("Walk", false);
+                    _myRigidbody.angularVelocity = new Vector3(0, 0, 0);
+                }
             }
         }
-        public void Move(float h, float v)
+
+        public void Move()
         {
-            transform.Translate(new Vector3(0, 0, v * _speed) * Time.deltaTime);
-            transform.Rotate(new Vector3(0, h * _rotateSpeed, 0) * Time.deltaTime);
+            //지금 바라보는 방향의 부호 != 나아갈 방향 부호
+            if (Mathf.Sign(transform.forward.x) != Mathf.Sign(dir.x) || Mathf.Sign(transform.forward.z) != Mathf.Sign(dir.z))
+            {
+                transform.Rotate(0, 1, 0);
+            }
+
+            transform.forward = Vector3.Lerp(transform.forward, dir, _rotateSpeed* Time.deltaTime);
+
+            _myRigidbody.MovePosition(gameObject.transform.position + dir * _speed * Time.deltaTime);
         }
 
         public void Jump()
@@ -206,7 +227,6 @@ namespace josoomin
         {
             _myAni.SetTrigger("TakeDamage");
             _hp -= Damage;
-            _hpText.text = (_hp + "/" + _maxHp);
         }
 
         void PlayerReSpone()

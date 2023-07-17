@@ -6,6 +6,9 @@ namespace josoomin
 {
     public class RotateCamera : MonoBehaviour
     {
+        public Transform targetTransform;
+        public Vector3 CameraOffset;
+
         private float xRotate, yRotate, xRotateMove, yRotateMove;
         public float rotateSpeed = 500.0f;
         int _xMaxValue = -10;
@@ -21,6 +24,7 @@ namespace josoomin
 
             xRotate = Mathf.Clamp(xRotate, -90, 90); // ��, �Ʒ� ����
 
+            transform.position = targetTransform.position + CameraOffset;
 
             if (UI_Canvas.I._talk == false)
             {

@@ -89,13 +89,6 @@ namespace josoomin
                 other.GetComponent<Player>().TakeDamage(5f);
         }
 
-        void Die()
-        {
-            _die = true;
-            _myAni.SetTrigger("Die");
-            _myAttackTrigger.enabled = false;
-        }
-
         public void TakeDamage(float damage)
         {
             _hp -= damage;
@@ -107,6 +100,18 @@ namespace josoomin
         public void NoTakeDamage()
         {
             _takeDamage = false;
+        }
+
+        void Die()
+        {
+            _die = true;
+            _myAni.SetTrigger("Die");
+            _myAttackTrigger.enabled = false;
+        }
+
+        void DestroyMe()
+        {
+            Destroy(gameObject);
         }
     }
 }
