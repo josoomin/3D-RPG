@@ -22,7 +22,7 @@ namespace josoomin
             //xRotate = transform.eulerAngles.x + xRotateMove; 
             xRotate = xRotate + xRotateMove;
 
-            xRotate = Mathf.Clamp(xRotate, -90, 90); // ��, �Ʒ� ����
+            xRotate = Mathf.Clamp(xRotate, -90, 90);
 
             transform.position = targetTransform.position + CameraOffset;
 

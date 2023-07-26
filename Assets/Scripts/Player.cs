@@ -16,7 +16,7 @@ namespace josoomin
         public Slider _hpBar; // 내 채력바 UI
         public Text _hpText; // 내 체력 표시 택스트
 
-        float _hp; // 내 체력
+        public float _hp; // 내 체력
         float _maxHp = 100; // 내 최대 체력
 
         float _speed = 10f; // 내 이동 속도
@@ -26,9 +26,10 @@ namespace josoomin
         bool _plane; // 현재 바닥에 닿았는지 유무 확인
         bool _defand; // 방어 중인지 확인
         bool _attack; // 내가 공격 중 인지
-        bool _die; // 내가 죽었는지
+        public bool _die; // 내가 죽었는지
 
         public List<string> _inven; // 인벤토리
+        public List<string> _quest; // 퀘스트 리스트
 
         Rigidbody _myRigidbody; // 내 리지드바디
 
@@ -50,8 +51,6 @@ namespace josoomin
         {
             _hpBar.value = _hp;
             _hpText.text = (_hp + "/" + _maxHp);
-            //float h = Input.GetAxisRaw("Horizontal");
-            //float v = Input.GetAxisRaw("Vertical");
 
             dir.x = Input.GetAxis("Horizontal");
             dir.z = Input.GetAxis("Vertical");
@@ -59,51 +58,68 @@ namespace josoomin
 
             if (UI_Canvas.I._talk == false && !_die)
             {
-                if (Input.GetKeyDown(KeyCode.Space) && _plane)
+                if (!UI_Canvas.I._questWindowActive)
                 {
-                    Jump();
-                }
-
-                if (Input.GetMouseButtonDown(0) && !_defand)
-                {
-                    Attack();
-                }
-
-                if (Input.GetMouseButton(1) && !_attack)
-                {
-                    Defand();
-                }
-
-                if (Input.GetMouseButtonUp(1))
-                {
-                    NotDefand();
-                }
-
-                if (transform.position.y <= -10)
-                {
-                    PlayerReSpone();
-                }
-
-                if (_hp <= 0)
-                {
-                    Die();
-                }
-
-                if (Input.GetKeyDown(KeyCode.F))
-                {
-                    if (UI_Canvas.I._closeNPC)
+                    if (Input.GetKeyDown(KeyCode.Space) && _plane)
                     {
-                        UI_Canvas.I.ActiveTalkWindow();
+                        Jump();
                     }
 
-                    if (UI_Canvas.I._closeKey)
+                    if (Input.GetMouseButtonDown(0) && !_defand)
                     {
-                        _closeObject.GetComponent<Key>().ActiveObject(gameObject);
+                        Attack();
                     }
 
-                    if (UI_Canvas.I._closeTreasureBox || UI_Canvas.I._closeRock)
+                    if (Input.GetMouseButton(1) && !_attack)
                     {
-                        InteractionObject();
+                        Defand();
+                    }
+
+                    if (Input.GetMouseButtonUp(1))
+                    {
+                        NotDefand();
+                    }
+
+                    if (transform.position.y <= -10)
+                    {
+                        PlayerReSpone();
+                    }
+
+                    if (_hp <= 0)
+                    {
+                        Die();
+                    }
+
+                    if (Input.GetKeyDown(KeyCode.F))
+                    {
+                        if (UI_Canvas.I._closeNPC)
+                        {
+                            UI_Canvas.I.ActiveTalkWindow();
+                        }
+
+                        if (UI_Canvas.I._closeKey)
+                        {
+                            _closeObject.GetComponent<Key>().ActiveObject(gameObject);
+                        }
+
+                        if (UI_Canvas.I._closeTreasureBox || UI_Canvas.I._closeRock)
+                        {
+                            InteractionObject();
+                        }
+                    }
+                }
+                if (Input.GetKeyDown(KeyCode.Q))
+                {
+                    if (!UI_Canvas.I._questWindowActive)
+                    {
+                        UI_Canvas.I._questWindowActive = true;
+                        UI_Canvas.I._myQuestWindow.SetActive(true);
+                    }
+
+                    else if (UI_Canvas.I._questWindowActive)
+                    {
+                        UI_Canvas.I._questWindowActive = false;
+                        UI_Canvas.I._myQuestWindow.SetActive(false);
                     }
                 }
             }
@@ -111,7 +127,7 @@ namespace josoomin
 
         private void FixedUpdate()
         {
-            if (UI_Canvas.I._talk == false && !_die)
+            if (UI_Canvas.I._talk == false && !_die && !UI_Canvas.I._questWindowActive)
             {
                 if (dir != Vector3.zero)
                 {
@@ -128,7 +144,6 @@ namespace josoomin
 
         public void Move()
         {
-            //지금 바라보는 방향의 부호 != 나아갈 방향 부호
             if (Mathf.Sign(transform.forward.x) != Mathf.Sign(dir.x) || Mathf.Sign(transform.forward.z) != Mathf.Sign(dir.z))
             {
                 transform.Rotate(0, 1, 0);
@@ -163,6 +178,8 @@ namespace josoomin
 
         void InteractionObject()
         {
+
+
             if (_closeObject.name == "TreasureBox")
             {
                 if (_inven.Contains("Key"))

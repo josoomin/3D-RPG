@@ -45,6 +45,11 @@ namespace josoomin
                 {
                     Die();
                 }
+
+                if (transform.position.y <= -1)
+                {
+                    TakeDamage(100);
+                }
             }
         }
 
@@ -60,7 +65,7 @@ namespace josoomin
                 transform.LookAt(target);
             }
 
-            else if (distance < _attackLange)
+            else if (distance < _attackLange && target.GetComponent<Player>()._die == false)
             {
                 _myAni.SetTrigger("Attack 02");
                 _myAni.SetBool("Run Forward", false);
@@ -85,7 +90,7 @@ namespace josoomin
 
         private void OnTriggerEnter(Collider other)
         {
-            if (other.tag == "Player")
+            if (other.tag == "Player" && other.GetComponent<Player>()._hp > 0)
                 other.GetComponent<Player>().TakeDamage(5f);
         }
 
@@ -107,6 +112,22 @@ namespace josoomin
             _die = true;
             _myAni.SetTrigger("Die");
             _myAttackTrigger.enabled = false;
+
+            List<string> _MonLi = GameManager.I._monsterList;
+
+            for (int i = 0; i < _MonLi.Count; i++)
+            {
+                if (_MonLi[i] == gameObject.name)
+                {
+                    _MonLi.RemoveAt(i);
+                    break;
+                }
+            }
+
+            if (_MonLi.Count == 0)
+            {
+                GameManager.I.DropKey();
+            }
         }
 
         void DestroyMe()

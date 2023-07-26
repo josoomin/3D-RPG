@@ -10,22 +10,35 @@ namespace josoomin
     {
         public static UI_Canvas I;
 
-        Text _alarmText;
+        public Text _alarmText;
         Text _fKeyText;
 
-        [SerializeField] GameObject _fKey;
-        [SerializeField] GameObject _talkWindow;
-        [SerializeField] GameObject _questListWindow;
-        [SerializeField] GameObject _questWindow;
+        public GameObject _player;
 
-        [SerializeField] [Range(0f, 3f)] float contactDistance = 1f;
+        GameObject _fKey;
+        GameObject _talkWindow;
+        GameObject _questListWindow;
+        GameObject _questWindow;
+        public GameObject _myQuestWindow; // 플레이어의 퀘스트 화면
+        public GameObject _contents; // 퀘스트를 담고 있는 게임 오브젝트
+        public Material _alarmTextMaterial;
 
         public bool _closeNPC;
         public bool _closeKey;
         public bool _closeTreasureBox;
         public bool _closeRock;
 
-        public bool _talk;
+        public bool _talk; // 현재 NPC와 대화중인지
+        public bool _questWindowActive; // 퀘스트 창이 켜져있는지
+
+        Text _questTitle; // 현재 열린 창의 퀘스트 이름
+        Text _questInfo; // 현재 열린 창의 퀘스트 정보
+        string _openQuest; // 지금 보고 있는 퀘스트
+        [SerializeField] List<GameObject> _allQuestList; // 모든 퀘스트 리스트
+
+        public float fadeDuration = 2f; // 사라지는 데 걸리는 시간 (초)
+
+        private Color originalColor; // 물체의 원래 색상을 저장할 변수
 
         private void Awake()
         {
@@ -38,14 +51,26 @@ namespace josoomin
             _talkWindow = transform.Find("TalkWindow").gameObject;
             _questListWindow = transform.Find("QuestListWindow").gameObject;
             _questWindow = transform.Find("QuestWindow").gameObject;
+            _myQuestWindow = transform.Find("MyQuest").gameObject;
             _fKeyText = transform.Find("TalkKey/Text").GetComponent<Text>();
             _alarmText = transform.Find("AlarmText").GetComponent<Text>();
+            _questTitle = _questWindow.transform.Find("Image/Title").GetComponent<Text>();
+            _questInfo = _questWindow.transform.Find("Image/Detail").GetComponent<Text>();
+            originalColor = _alarmText.material.color;
 
             _fKey.SetActive(false);
             _talkWindow.SetActive(false);
             _questListWindow.SetActive(false);
             _questWindow.SetActive(false);
+            _myQuestWindow.SetActive(false);
+            _questWindowActive = false;
             _alarmText.enabled = false;
+
+            for (int i = 0; i < _contents.transform.childCount; i++)
+            {
+                GameObject _Quest = _contents.transform.GetChild(i).gameObject;
+                _allQuestList.Add(_Quest);
+            }
         }
 
         public void CloseMapObject(string _object, bool Player)
@@ -92,6 +117,8 @@ namespace josoomin
         public void ActiveText(string text)
         {
             _alarmText.text = text;
+            _alarmText.material = _alarmTextMaterial;
+
             StartCoroutine(FadeAway());
         }
 
@@ -100,23 +127,29 @@ namespace josoomin
             var color = _alarmText.color;
 
             _alarmText.enabled = true;
-            yield return new WaitForSeconds(2);
-            while (_alarmText.color.a > 0)
-            {
-                //color.a is 0 to 1. So .5*time.deltaTime will take 2 seconds to fade out
-                color.a -= (.5f * Time.deltaTime);
+            _alarmText.material.color = new Color(color.r, color.g, color.b, 255f);
 
-                _alarmText.color = color;
-                //wait for a frame
+            yield return new WaitForSeconds(1);
+
+            // 시작 시간을 저장합니다.
+            float startTime = Time.time;
+
+            // 물체가 사라지는 동안의 처리
+            while (Time.time < startTime + fadeDuration)
+            {
+                // 현재 시간에서 시작 시간을 뺀 시간의 비율을 계산합니다.
+                float t = (Time.time - startTime) / fadeDuration;
+
+                // 색상의 알파값을 서서히 줄여 물체를 사라지게 합니다.
+                Color fadeColor = new Color(color.r, color.g, color.b, 1 - t);
+                _alarmText.material.color = fadeColor;
+
+                // 한 프레임씩 대기합니다.
                 yield return null;
             }
 
-            if (_alarmText.color.a == 0)
-            {
-                _alarmText.enabled = false;
-                color.a = 255;
-                _alarmText.color = color;
-            }
+            // Coroutine이 끝났을 때, 물체의 색상을 완전히 투명하게 만듭니다.
+            _alarmText.enabled = false;
         }
 
         public void ActiveTalkWindow()
@@ -125,7 +158,7 @@ namespace josoomin
             _talkWindow.SetActive(true);
         }
 
-        public void DeActiveTalkWindow()
+        public void DeActiveAllWindow()
         {
             _talk = false;
             _talkWindow.SetActive(false);
@@ -140,31 +173,52 @@ namespace josoomin
         
         public void ActiveQuestWindow()
         {
-            Text _questTitle = _questWindow.transform.Find("Image/Title").GetComponent<Text>();
-            Text _questInfo = _questWindow.transform.Find("Image/Detail").GetComponent<Text>();
-            GameObject _clickObject = EventSystem.current.currentSelectedGameObject;
-
-            
             _questWindow.SetActive(true);
+
+            GameObject _clickObject = EventSystem.current.currentSelectedGameObject;
 
             if (_clickObject.tag == "QuestButton")
             {
                 Text _buttonTitle = _clickObject.transform.Find("Title").GetComponent<Text>();
 
                 _questTitle.text = _buttonTitle.text;
+                _openQuest = _questTitle.text;
 
-                if (_clickObject.name == "몬스터 퇴치")
+                if (_questTitle.text == "몬스터 퇴치")
                 {
                     _questInfo.text = "중앙섬에 있는 몬스터를 모두 퇴치하자 \n\n 보상: 100골드";
                 }
 
-                else if (_clickObject.name == "바위 부수기")
+                else if (_questTitle.text == "바위 부수기")
                 {
                     _questInfo.text = "마지막 섬을 막는 바위를 부숴라 \n\n 보상: 1000골드";
                 }
             }
         }
 
+        public void QuestAccept()
+        {
+            Player _Player = _player.GetComponent<Player>();
+            GameObject _MyQuestPannel = _myQuestWindow.transform.Find("List/Scroll View/Viewport/Content").gameObject;
 
+
+            for (int i = 0; i < _allQuestList.Count; i++)
+            {
+                string _QuestTitle = _allQuestList[i].transform.Find("Title").GetComponent<Text>().text;
+
+                if (_QuestTitle == _openQuest)
+                {
+                    _allQuestList[i].transform.parent = _MyQuestPannel.transform;
+                    _Player._quest.Add(_QuestTitle);
+                }
+            }
+
+            _questWindow.SetActive(false);
+        }
+
+        public void QuestRefuse()
+        {
+            _questWindow.SetActive(false);
+        }
     }
 }
