@@ -24,18 +24,9 @@ namespace josoomin
             }
         }
 
-        public void ActiveObject(GameObject Player)
+        public virtual void ActiveObject(GameObject Player)
         {
             Player _Player = Player.GetComponent<Player>();
-
-            if (gameObject.name == "Key")
-            {
-                _Player._inven.Add(gameObject.name);
-            }
-            else if(gameObject.name == "TreasureBox")
-            {
-                _Player._inven.Add("망치");
-            }
             
             Destroy(gameObject);
             UI_Canvas.I.CloseMapObject(gameObject.name, false);

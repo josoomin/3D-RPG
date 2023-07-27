@@ -19,8 +19,17 @@ namespace josoomin
         GameObject _talkWindow;
         GameObject _questListWindow;
         GameObject _questWindow;
-        public GameObject _myQuestWindow; // 플레이어의 퀘스트 화면
+
+        public GameObject _myQuest; // 플레이어의 퀘스트 화면
+        public bool _questWindowActive; // 퀘스트 창이 켜져있는지
+
         public GameObject _contents; // 퀘스트를 담고 있는 게임 오브젝트
+
+        public GameObject _myInventory; // 플레이어 인벤토리
+        public bool _inventoryActive; // 인벤토리 창이 켜져있는지
+
+        public GameObject _itemIcons; // 아이템 아이콘들
+
         public Material _alarmTextMaterial;
 
         public bool _closeNPC;
@@ -29,7 +38,7 @@ namespace josoomin
         public bool _closeRock;
 
         public bool _talk; // 현재 NPC와 대화중인지
-        public bool _questWindowActive; // 퀘스트 창이 켜져있는지
+
 
         Text _questTitle; // 현재 열린 창의 퀘스트 이름
         Text _questInfo; // 현재 열린 창의 퀘스트 정보
@@ -51,7 +60,7 @@ namespace josoomin
             _talkWindow = transform.Find("TalkWindow").gameObject;
             _questListWindow = transform.Find("QuestListWindow").gameObject;
             _questWindow = transform.Find("QuestWindow").gameObject;
-            _myQuestWindow = transform.Find("MyQuest").gameObject;
+            _myQuest = transform.Find("MyQuest").gameObject;
             _fKeyText = transform.Find("TalkKey/Text").GetComponent<Text>();
             _alarmText = transform.Find("AlarmText").GetComponent<Text>();
             _questTitle = _questWindow.transform.Find("Image/Title").GetComponent<Text>();
@@ -62,7 +71,9 @@ namespace josoomin
             _talkWindow.SetActive(false);
             _questListWindow.SetActive(false);
             _questWindow.SetActive(false);
-            _myQuestWindow.SetActive(false);
+            _myQuest.SetActive(false);
+            _myInventory.SetActive(false);
+            _itemIcons.SetActive(false);
             _questWindowActive = false;
             _alarmText.enabled = false;
 
@@ -199,7 +210,7 @@ namespace josoomin
         public void QuestAccept()
         {
             Player _Player = _player.GetComponent<Player>();
-            GameObject _MyQuestPannel = _myQuestWindow.transform.Find("List/Scroll View/Viewport/Content").gameObject;
+            GameObject _MyQuestPannel = _myQuest.transform.Find("List/Scroll View/Viewport/Content").gameObject;
 
 
             for (int i = 0; i < _allQuestList.Count; i++)

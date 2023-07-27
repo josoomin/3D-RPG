@@ -18,12 +18,16 @@ namespace josoomin
 
         public GameObject _sponePoints;
         public List<GameObject> _sponePointList;
-        public List<string> _monsterList;
 
         public GameObject _monster;
+        public List<string> _monsterList;
+
+        public GameObject _whiteParticleSystem;
 
         void Start()
         {
+            _whiteParticleSystem.SetActive(false);
+
             //모든 스폰 포인트 배열에 추가
             for (int i = 0; i < _sponePoints.transform.childCount; i++)
             {
@@ -48,6 +52,11 @@ namespace josoomin
             {
                 GameObject _Item = _mapObject.transform.GetChild(i).gameObject;
                 _mapObjectList.Add(_Item);
+
+                if (_mapObjectList[i].name == "Key")
+                {
+                    _mapObjectList[i].SetActive(false);
+                }
             }
         }
 
@@ -68,7 +77,11 @@ namespace josoomin
                     {
                         if (_sponePointList[j].name == "KeySponePoint")
                         {
-                            _mapObjectList[i].transform.position = _sponePointList[j].transform.position;
+                            Vector3 _SP = _sponePointList[j].transform.position;
+
+                            _whiteParticleSystem.SetActive(true);
+                            _whiteParticleSystem.transform.position = _SP;
+                            _mapObjectList[i].transform.position = _SP;
                             break;
                         }
                     }

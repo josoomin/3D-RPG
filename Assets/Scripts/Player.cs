@@ -28,7 +28,8 @@ namespace josoomin
         bool _attack; // 내가 공격 중 인지
         public bool _die; // 내가 죽었는지
 
-        public List<string> _inven; // 인벤토리
+        public GameObject _inven; // 인벤토리
+        public List<string> _invenList; // 인벤토리 텍스트 리스트
         public List<string> _quest; // 퀘스트 리스트
 
         Rigidbody _myRigidbody; // 내 리지드바디
@@ -80,11 +81,6 @@ namespace josoomin
                         NotDefand();
                     }
 
-                    if (transform.position.y <= -10)
-                    {
-                        PlayerReSpone();
-                    }
-
                     if (_hp <= 0)
                     {
                         Die();
@@ -108,18 +104,34 @@ namespace josoomin
                         }
                     }
                 }
+
                 if (Input.GetKeyDown(KeyCode.Q))
                 {
                     if (!UI_Canvas.I._questWindowActive)
                     {
                         UI_Canvas.I._questWindowActive = true;
-                        UI_Canvas.I._myQuestWindow.SetActive(true);
+                        UI_Canvas.I._myQuest.SetActive(true);
                     }
 
                     else if (UI_Canvas.I._questWindowActive)
                     {
                         UI_Canvas.I._questWindowActive = false;
-                        UI_Canvas.I._myQuestWindow.SetActive(false);
+                        UI_Canvas.I._myQuest.SetActive(false);
+                    }
+                }
+
+                if (Input.GetKeyDown(KeyCode.I))
+                {
+                    if (!UI_Canvas.I._inventoryActive)
+                    {
+                        UI_Canvas.I._inventoryActive = true;
+                        UI_Canvas.I._myInventory.SetActive(true);
+                    }
+
+                    else if (UI_Canvas.I._inventoryActive)
+                    {
+                        UI_Canvas.I._inventoryActive = false;
+                        UI_Canvas.I._myInventory.SetActive(false);
                     }
                 }
             }
@@ -160,6 +172,14 @@ namespace josoomin
             _myRigidbody.AddForce(Vector3.up * _jumppower, ForceMode.Impulse);
         }
 
+        private void OnCollisionEnter(Collision collision)
+        {
+            if (collision.gameObject.CompareTag("GetOffPoint"))
+            {
+                PlayerReSpone();
+            }
+        }
+
         void OnCollisionStay (Collision collision)
         {
             if (collision.gameObject.CompareTag("Plane"))
@@ -178,18 +198,16 @@ namespace josoomin
 
         void InteractionObject()
         {
-
-
             if (_closeObject.name == "TreasureBox")
             {
-                if (_inven.Contains("Key"))
+                if (_invenList.Contains("Key"))
                 {
-                    _inven.Remove("Key");
+                    _invenList.Remove("Key");
                     UI_Canvas.I.ActiveText("망치를 얻었습니다.");
                     _closeObject.GetComponent<TreasureBox>().ActiveObject(gameObject);
                 }
 
-                else if (!_inven.Contains("Key"))
+                else if (!_invenList.Contains("Key"))
                 {
                     UI_Canvas.I.ActiveText("열쇠가 없습니다.");
                     return;
@@ -198,14 +216,14 @@ namespace josoomin
 
             else if (_closeObject.name == "Rock")
             {
-                if (_inven.Contains("망치"))
+                if (_invenList.Contains("Hammer"))
                 {
-                    _inven.Remove("망치");
+                    _invenList.Remove("Hammer");
                     UI_Canvas.I.ActiveText("바위를 부쉈습니다.");
                     _closeObject.GetComponent<Rock>().ActiveObject(gameObject);
                 }
 
-                else if (!_inven.Contains("망치"))
+                else if (!_invenList.Contains("Hammer"))
                 {
                     UI_Canvas.I.ActiveText("망치가 없습니다.");
                     return;

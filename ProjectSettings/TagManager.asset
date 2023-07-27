@@ -10,6 +10,7 @@ TagManager:
   - Monster
   - Key
   - QuestButton
+  - GetOffPoint
   layers:
   - Default
   - TransparentFX
