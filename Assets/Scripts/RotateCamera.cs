@@ -15,26 +15,29 @@ namespace josoomin
 
         void Update()
         {
-            xRotateMove = -Input.GetAxis("Mouse Y") * Time.deltaTime * rotateSpeed;
-            yRotateMove = Input.GetAxis("Mouse X") * Time.deltaTime * rotateSpeed;
-
-            yRotate = transform.eulerAngles.y + yRotateMove;
-            //xRotate = transform.eulerAngles.x + xRotateMove; 
-            xRotate = xRotate + xRotateMove;
-
-            xRotate = Mathf.Clamp(xRotate, -90, 90);
-
-            transform.position = targetTransform.position + CameraOffset;
-
-            if (UI_Canvas.I._talk == false)
+            if (!UI_Canvas.I._playerUIActive)
             {
-                if (xRotate >= _xMaxValue)
+                xRotateMove = -Input.GetAxis("Mouse Y") * Time.deltaTime * rotateSpeed;
+                yRotateMove = Input.GetAxis("Mouse X") * Time.deltaTime * rotateSpeed;
+
+                yRotate = transform.eulerAngles.y + yRotateMove;
+                //xRotate = transform.eulerAngles.x + xRotateMove; 
+                xRotate = xRotate + xRotateMove;
+
+                xRotate = Mathf.Clamp(xRotate, -90, 90);
+
+                transform.position = targetTransform.position + CameraOffset;
+
+                if (UI_Canvas.I._talk == false)
                 {
-                    transform.eulerAngles = new Vector3(xRotate, yRotate, 0);
-                }
-                else
-                {
-                    transform.eulerAngles = new Vector3(_xMaxValue, yRotate, 0);
+                    if (xRotate >= _xMaxValue)
+                    {
+                        transform.eulerAngles = new Vector3(xRotate, yRotate, 0);
+                    }
+                    else
+                    {
+                        transform.eulerAngles = new Vector3(_xMaxValue, yRotate, 0);
+                    }
                 }
             }
         }

@@ -16,9 +16,7 @@ namespace josoomin
 
             if (gameObject.name == "Key")
             {
-                _key.transform.parent = _Player._inven.transform;
-                _key.SetActive(true);
-                _Player._invenList.Add(gameObject.name);
+                base.AddInven(Player, _key);
             }
         }
     }

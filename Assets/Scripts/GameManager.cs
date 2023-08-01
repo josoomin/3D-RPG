@@ -13,6 +13,9 @@ namespace josoomin
             I = this;
         }
 
+        public GameObject _player;
+        Player _playerCscript;
+
         public GameObject _mapObject;
         public List<GameObject> _mapObjectList;
 
@@ -24,8 +27,13 @@ namespace josoomin
 
         public GameObject _whiteParticleSystem;
 
+        public int _deathMonsterCount;
+        public int _breakRockCount;
+
         void Start()
         {
+            _playerCscript = _player.GetComponent<Player>();
+
             _whiteParticleSystem.SetActive(false);
 
             //모든 스폰 포인트 배열에 추가
@@ -60,11 +68,6 @@ namespace josoomin
             }
         }
 
-        void Update()
-        {
-
-        }
-
         public void DropKey()
         {
             for (int i = 0; i < _mapObjectList.Count; i++)
@@ -88,6 +91,16 @@ namespace josoomin
                     break;
                 }
             }
+        }
+
+        public void ClearMonsterQuest()
+        {
+            _playerCscript._money += 500;
+        }
+
+        public void ClearRockQuest()
+        {
+            _playerCscript._money += 1000;
         }
     }
 }

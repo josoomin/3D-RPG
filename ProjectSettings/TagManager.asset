@@ -11,6 +11,8 @@ TagManager:
   - Key
   - QuestButton
   - GetOffPoint
+  - PlusButton
+  - MinusButton
   layers:
   - Default
   - TransparentFX

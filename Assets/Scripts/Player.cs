@@ -13,13 +13,16 @@ namespace josoomin
         public BoxCollider _attackCol; // 내 검 콜라이더 
         public BoxCollider _defandCol; // 내 방패 콜라이더
 
-        public Slider _hpBar; // 내 채력바 UI
-        public Text _hpText; // 내 체력 표시 택스트
-
         public float _hp; // 내 체력
-        float _maxHp = 100; // 내 최대 체력
+        public float _maxHp; // 내 최대 체력
 
-        float _speed = 10f; // 내 이동 속도
+        public float _ATK; // 공격력
+
+        public float _DEF; //방어력
+
+        public int _money;
+
+        public float _speed ; // 내 이동 속도
         float _rotateSpeed = 100.0f; // 내 회전 속도
         float _jumppower = 5.0f; // 내 점프 파워
 
@@ -45,21 +48,21 @@ namespace josoomin
             _attackCol.enabled = false;
             _defandCol.enabled = false;
             _die = false;
+            _maxHp = 100;
             _hp = _maxHp;
+            _money = 500;
+            _ATK = 5f;
         }
 
         void Update()
         {
-            _hpBar.value = _hp;
-            _hpText.text = (_hp + "/" + _maxHp);
-
             dir.x = Input.GetAxis("Horizontal");
             dir.z = Input.GetAxis("Vertical");
             dir.Normalize();
 
             if (UI_Canvas.I._talk == false && !_die)
             {
-                if (!UI_Canvas.I._questWindowActive)
+                if (!UI_Canvas.I._playerUIActive)
                 {
                     if (Input.GetKeyDown(KeyCode.Space) && _plane)
                     {
@@ -107,39 +110,24 @@ namespace josoomin
 
                 if (Input.GetKeyDown(KeyCode.Q))
                 {
-                    if (!UI_Canvas.I._questWindowActive)
-                    {
-                        UI_Canvas.I._questWindowActive = true;
-                        UI_Canvas.I._myQuest.SetActive(true);
-                    }
-
-                    else if (UI_Canvas.I._questWindowActive)
-                    {
-                        UI_Canvas.I._questWindowActive = false;
-                        UI_Canvas.I._myQuest.SetActive(false);
-                    }
+                    UI_Canvas.I.PlayerUI(UI_Canvas.I._myQuest, ref UI_Canvas.I._questActive);
                 }
 
                 if (Input.GetKeyDown(KeyCode.I))
                 {
-                    if (!UI_Canvas.I._inventoryActive)
-                    {
-                        UI_Canvas.I._inventoryActive = true;
-                        UI_Canvas.I._myInventory.SetActive(true);
-                    }
+                    UI_Canvas.I.PlayerUI(UI_Canvas.I._myInventory, ref UI_Canvas.I._inventoryActive);
+                }
 
-                    else if (UI_Canvas.I._inventoryActive)
-                    {
-                        UI_Canvas.I._inventoryActive = false;
-                        UI_Canvas.I._myInventory.SetActive(false);
-                    }
+                if (Input.GetKeyDown(KeyCode.C))
+                {
+                    UI_Canvas.I.PlayerUI(UI_Canvas.I._myState, ref UI_Canvas.I._StateActive);
                 }
             }
         }
 
         private void FixedUpdate()
         {
-            if (UI_Canvas.I._talk == false && !_die && !UI_Canvas.I._questWindowActive)
+            if (UI_Canvas.I._talk == false && !_die && !UI_Canvas.I._playerUIActive)
             {
                 if (dir != Vector3.zero)
                 {
@@ -220,7 +208,16 @@ namespace josoomin
                 {
                     _invenList.Remove("Hammer");
                     UI_Canvas.I.ActiveText("바위를 부쉈습니다.");
+                    GameManager.I._breakRockCount += 1;
                     _closeObject.GetComponent<Rock>().ActiveObject(gameObject);
+
+                    for (int i = 0; i < _inven.transform.childCount; i++)
+                    {
+                        if (_inven.transform.GetChild(i).name == "Hammer")
+                        {
+                            _inven.transform.GetChild(i).gameObject.SetActive(false);
+                        }
+                    }
                 }
 
                 else if (!_invenList.Contains("Hammer"))

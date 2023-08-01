@@ -31,6 +31,20 @@ namespace josoomin
             Destroy(gameObject);
             UI_Canvas.I.CloseMapObject(gameObject.name, false);
             _Player._closeObject = null;
+
+            if (gameObject.name == "Rock")
+            {
+                UI_Canvas.I._breakRock = true;
+            }
+        }
+
+        public virtual void AddInven(GameObject Player, GameObject Item)
+        {
+            Player _Player = Player.GetComponent<Player>();
+
+            Item.transform.parent = _Player._inven.transform;
+            Item.SetActive(true);
+            _Player._invenList.Add(Item.name);
         }
     }
 }

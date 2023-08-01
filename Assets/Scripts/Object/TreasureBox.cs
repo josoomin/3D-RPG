@@ -26,9 +26,7 @@ namespace josoomin
             {
                 for (int i = 0; i < _inItem.Count; i++)
                 {
-                    _inItem[i].transform.parent = _Player._inven.transform;
-                    _inItem[i].SetActive(true);
-                    _Player._invenList.Add(_inItem[i].name);
+                    base.AddInven(Player, _inItem[i]);
                 }
 
                 for (int i = 0; i < _Player._invenList.Count; i++)
@@ -41,9 +39,11 @@ namespace josoomin
 
                 for (int i = 0; i < _Player._inven.transform.childCount; i++)
                 {
-                    if (_Player._inven.transform.GetChild(i).name == "Key")
+                    Transform _Key = _Player._inven.transform.GetChild(i);
+
+                    if (_Key.name == "Key")
                     {
-                        Destroy(_Player._inven.transform.GetChild(i));
+                        _Key.gameObject.SetActive(false);
                     }
                 }
             }
