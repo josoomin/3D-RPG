@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
+
 namespace josoomin
 {
     public class UI_Canvas : MonoBehaviour
@@ -55,6 +56,8 @@ namespace josoomin
         public GameObject _myState; // 플레이어 스테이터스
         public bool _StateActive; // 스테이터스 창이 켜져있는지
 
+        public GameObject _menu; // 메뉴창
+
         public bool _playerUIActive; // 플레이어의 UI 창이 켜져 있는지
 
         public Material _alarmTextMaterial;
@@ -96,6 +99,7 @@ namespace josoomin
             _alarmText = transform.Find("AlarmText").GetComponent<Text>();
             _NPCQuestTitle = _NPCQuestInfoWindow.transform.Find("Image/Title").GetComponent<Text>();
             _NPCQuestInfo = _NPCQuestInfoWindow.transform.Find("Image/Detail").GetComponent<Text>();
+            _menu = transform.Find("UI_Menu").gameObject;
             originalColor = _alarmText.material.color;
 
             _fKey.SetActive(false);
@@ -107,6 +111,7 @@ namespace josoomin
             _myInventory.SetActive(false);
             _myState.SetActive(false);
             _itemIcons.SetActive(false);
+            _menu.SetActive(false);
             _questActive = false;
             _inventoryActive = false;
             _StateActive = false;
@@ -125,7 +130,7 @@ namespace josoomin
         {
             _hpBar.value = ((_playerScript._hp / _playerScript._maxHp) * 100);
             _hpText.text = (_playerScript._hp + "/" + _playerScript._maxHp);
-            
+
             _moneyText.text = _playerScript._money.ToString();
             _HPText.text = _playerScript._maxHp.ToString();
             _ATKText.text = _playerScript._ATK.ToString();
@@ -392,38 +397,49 @@ namespace josoomin
 
             if (_clickObject.tag == "MinusButton")
             {
-                if (_clickObject.transform.parent.name == "ATK")
+                if (_clickObject.transform.parent.name == "MAXHP" 
+                    && _playerScript._maxHp > 10 
+                    && _nowHP < _playerScript._maxHp)
                 {
+                    _playerScript._maxHp -= 10;
                     _playerScript._money += 100;
-                    if (_clickObject.transform.parent.name == "MAXHP")
-                    {
-                        _playerScript._maxHp -= 10;
-                    }
-                    else if (_clickObject.transform.parent.name == "ATK")
-                    {
-                        _playerScript._ATK -= 1;
-                    }
-                    else if (_clickObject.transform.parent.name == "DEF")
-                    {
-                        _playerScript._DEF -= 1;
-                    }
-                    else if (_clickObject.transform.parent.name == "SPD")
-                    {
-                        _playerScript._speed -= 1;
-                    }
+                }
+                else if (_clickObject.transform.parent.name == "ATK" 
+                    && _playerScript._ATK > 1 
+                    && _nowATK < _playerScript._ATK)
+                {
+                    _playerScript._ATK -= 1;
+                    _playerScript._money += 100;
+                }
+                else if (_clickObject.transform.parent.name == "DEF" 
+                    && _playerScript._DEF > 0 
+                    && _nowDEF < _playerScript._DEF)
+                {
+                    _playerScript._DEF -= 1;
+                    _playerScript._money += 100;
+                }
+                else if (_clickObject.transform.parent.name == "SPD" 
+                    && _playerScript._speed > 1 
+                    && _nowSPD < _playerScript._speed)
+                {
+                    _playerScript._speed -= 1;
+                    _playerScript._money += 100;
                 }
             }
         }
 
         public void StateApplyButton()
         {
+            if (_nowHP != _playerScript._maxHp)
+            {
+                _playerScript._hp = _playerScript._maxHp;
+            }
+
             _nowMoney = _playerScript._money;
             _nowHP = _playerScript._maxHp;
-            _playerScript._hp = _playerScript._maxHp;
             _nowATK = _playerScript._ATK;
             _nowDEF = _playerScript._DEF;
             _nowSPD = _playerScript._speed;
-            
         }
 
         public void StateCancleButton()
@@ -433,6 +449,23 @@ namespace josoomin
             _playerScript._ATK = _nowATK;
             _playerScript._DEF = _nowDEF;
             _playerScript._speed = _nowSPD;
+        }
+
+        public void OpenMenu()
+        {
+            _menu.SetActive(true);
+            Time.timeScale = 0;
+        }
+
+        public void CloseMenu()
+        {
+            _menu.SetActive(false);
+            Time.timeScale = 1;
+        }
+
+        public void RestartGame()
+        {
+            GameManager.I.ReStart();
         }
     }
 }

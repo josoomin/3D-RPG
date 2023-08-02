@@ -9,9 +9,12 @@ namespace josoomin
     {
         public GameObject _closeObject; // 닿고 있는 오브젝트
         public GameObject _reSponePoint; // 떨어지면 다시 스폰되는 위치
+        public AudioSource _stepSound; // 걸을때 소리
 
         public BoxCollider _attackCol; // 내 검 콜라이더 
-        public BoxCollider _defandCol; // 내 방패 콜라이더
+        public AudioSource _swordSound; // 검 휘두를때 소리
+
+        //public BoxCollider _defandCol; // 내 방패 콜라이더
 
         public float _hp; // 내 체력
         public float _maxHp; // 내 최대 체력
@@ -27,7 +30,7 @@ namespace josoomin
         float _jumppower = 5.0f; // 내 점프 파워
 
         bool _plane; // 현재 바닥에 닿았는지 유무 확인
-        bool _defand; // 방어 중인지 확인
+        public bool _defand; // 방어 중인지 확인
         bool _attack; // 내가 공격 중 인지
         public bool _die; // 내가 죽었는지
 
@@ -46,12 +49,13 @@ namespace josoomin
             _myRigidbody = GetComponent<Rigidbody>();
             _myAni = GetComponent<Animator>();
             _attackCol.enabled = false;
-            _defandCol.enabled = false;
+            //_defandCol.enabled = false;
             _die = false;
             _maxHp = 100;
             _hp = _maxHp;
             _money = 500;
             _ATK = 5f;
+            _DEF = 1f;
         }
 
         void Update()
@@ -64,19 +68,40 @@ namespace josoomin
             {
                 if (!UI_Canvas.I._playerUIActive)
                 {
-                    if (Input.GetKeyDown(KeyCode.Space) && _plane)
+                    if (!_attack && !_defand)
                     {
-                        Jump();
-                    }
+                        if (dir != Vector3.zero)
+                        {
+                            if(!_stepSound.isPlaying && _plane)
+                            _stepSound.Play();
 
-                    if (Input.GetMouseButtonDown(0) && !_defand)
-                    {
-                        Attack();
-                    }
+                            Move();
+                            _myAni.SetBool("Walk", true);
+                        }
+                        else
+                        {
+                            _stepSound.Stop();
+                            _myAni.SetBool("Walk", false);
+                            _myRigidbody.angularVelocity = new Vector3(0, 0, 0);
+                        }
 
-                    if (Input.GetMouseButton(1) && !_attack)
-                    {
-                        Defand();
+                        if (Input.GetMouseButtonDown(0))
+                        {
+                            Attack();
+                        }
+
+                        if (Input.GetMouseButton(1))
+                        {
+                            Defand();
+                        }
+
+                        if (_plane)
+                        {
+                            if (Input.GetKeyDown(KeyCode.Space))
+                            {
+                                Jump();
+                            }
+                        }
                     }
 
                     if (Input.GetMouseButtonUp(1))
@@ -123,22 +148,10 @@ namespace josoomin
                     UI_Canvas.I.PlayerUI(UI_Canvas.I._myState, ref UI_Canvas.I._StateActive);
                 }
             }
-        }
 
-        private void FixedUpdate()
-        {
-            if (UI_Canvas.I._talk == false && !_die && !UI_Canvas.I._playerUIActive)
+            if (Input.GetKeyDown(KeyCode.Escape))
             {
-                if (dir != Vector3.zero)
-                {
-                    Move();
-                    _myAni.SetBool("Walk", true);
-                }
-                else
-                {
-                    _myAni.SetBool("Walk", false);
-                    _myRigidbody.angularVelocity = new Vector3(0, 0, 0);
-                }
+                UI_Canvas.I.OpenMenu();
             }
         }
 
@@ -230,6 +243,7 @@ namespace josoomin
 
         public void Attack()
         {
+            _swordSound.Play();
             _attack = true;
             _attackCol.enabled = true;
             _myAni.SetTrigger("Attack");
@@ -244,21 +258,27 @@ namespace josoomin
         public void Defand()
         {
             _defand = true;
-            _defandCol.enabled = true;
+            //_defandCol.enabled = true;
             _myAni.SetBool("Defand", true);
         }
 
         public void NotDefand()
         {
             _defand = false;
-            _defandCol.enabled = false;
+            //_defandCol.enabled = false;
             _myAni.SetBool("Defand", false);
         }
 
         public void TakeDamage(float Damage)
         {
+            NotAttack();
             _myAni.SetTrigger("TakeDamage");
             _hp -= Damage;
+
+            if (_hp < 0)
+            {
+                _hp = 0;
+            }
         }
 
         void PlayerReSpone()

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace josoomin
 {
@@ -101,6 +102,12 @@ namespace josoomin
         public void ClearRockQuest()
         {
             _playerCscript._money += 1000;
+        }
+
+        public void ReStart()
+        {
+            SceneManager.LoadScene(0);
+            Time.timeScale = 1;
         }
     }
 }

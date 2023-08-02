@@ -13,6 +13,7 @@ namespace josoomin
         public BoxCollider _myAttackTrigger; // 내 공격 콜라이더
         float _attackLange = 0.75f; // 내 공격시전범위
 
+        float _ATK = 5f; // 내 공격력
         public float _hp; // 내 체력
 
         bool _takeDamage; // 내가 공격을 받는 중인지
@@ -44,11 +45,6 @@ namespace josoomin
                 if (_hp <= 0)
                 {
                     Die();
-                }
-
-                if (transform.position.y <= -1)
-                {
-                    TakeDamage(100);
                 }
             }
         }
@@ -90,12 +86,32 @@ namespace josoomin
 
         private void OnTriggerEnter(Collider other)
         {
-            if (other.tag == "Player" && other.GetComponent<Player>()._hp > 0)
-                other.GetComponent<Player>().TakeDamage(5f);
+            Player _player = other.GetComponent<Player>();
+
+            if (other.tag == "Player" && _player._hp > 0)
+            {
+                if (_player._defand)
+                {
+                    float _dmg = _ATK - _player._DEF;
+
+                    if (_dmg < 0)
+                        _player.TakeDamage(0);
+
+                    else
+                        _player.TakeDamage(_dmg);
+                }
+
+                else
+                    _player.TakeDamage(_ATK);
+            }
+
+            if (other.CompareTag("GetOffPoint"))
+                TakeDamage(100);
         }
 
         public void TakeDamage(float damage)
         {
+
             _hp -= damage;
             _takeDamage = true;
             _myAni.SetTrigger("Take Damage");
