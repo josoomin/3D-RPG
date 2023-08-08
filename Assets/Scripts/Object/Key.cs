@@ -7,9 +7,9 @@ namespace josoomin
     public class Key : MapObject
     {
         public GameObject _key;
-
         public override void ActiveObject(GameObject Player)
         {
+            ObjectSound.I.PlaySound("KEY");
             base.ActiveObject(Player);
 
             Player _Player = Player.GetComponent<Player>();

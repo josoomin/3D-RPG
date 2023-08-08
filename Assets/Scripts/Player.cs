@@ -9,10 +9,16 @@ namespace josoomin
     {
         public GameObject _closeObject; // 닿고 있는 오브젝트
         public GameObject _reSponePoint; // 떨어지면 다시 스폰되는 위치
-        public AudioSource _stepSound; // 걸을때 소리
 
         public BoxCollider _attackCol; // 내 검 콜라이더 
-        public AudioSource _swordSound; // 검 휘두를때 소리
+
+        public AudioSource _playerSound; //플레이어가 내는 소리
+        public AudioSource _stepSound; // 걸을 때 소리
+
+        public AudioClip _attackClip; // 검 휘두를때 소리
+        public AudioClip _jumpClip; // 점프 할 때 나는 소리
+        public AudioClip _hitClip; // 맞을때 나는 소리
+        public AudioClip _deathClip; // 죽을때 나는 소리
 
         //public BoxCollider _defandCol; // 내 방패 콜라이더
 
@@ -25,7 +31,7 @@ namespace josoomin
 
         public int _money;
 
-        public float _speed ; // 내 이동 속도
+        public float _speed; // 내 이동 속도
         float _rotateSpeed = 100.0f; // 내 회전 속도
         float _jumppower = 5.0f; // 내 점프 파워
 
@@ -72,8 +78,8 @@ namespace josoomin
                     {
                         if (dir != Vector3.zero)
                         {
-                            if(!_stepSound.isPlaying && _plane)
-                            _stepSound.Play();
+                            if (!_stepSound.isPlaying && _plane)
+                                _stepSound.Play();
 
                             Move();
                             _myAni.SetBool("Walk", true);
@@ -85,18 +91,18 @@ namespace josoomin
                             _myRigidbody.angularVelocity = new Vector3(0, 0, 0);
                         }
 
-                        if (Input.GetMouseButtonDown(0))
-                        {
-                            Attack();
-                        }
-
-                        if (Input.GetMouseButton(1))
-                        {
-                            Defand();
-                        }
-
                         if (_plane)
                         {
+                            if (Input.GetMouseButtonDown(0))
+                            {
+                                Attack();
+                            }
+
+                            if (Input.GetMouseButton(1))
+                            {
+                                Defand();
+                            }
+
                             if (Input.GetKeyDown(KeyCode.Space))
                             {
                                 Jump();
@@ -155,6 +161,26 @@ namespace josoomin
             }
         }
 
+        void PlaySound(string action)
+        {
+            switch (action)
+            {
+                case "ATTACK":
+                    _playerSound.clip = _attackClip;
+                    break;
+                case "JUMP":
+                    _playerSound.clip = _jumpClip;
+                    break;
+                case "HIT":
+                    _playerSound.clip = _hitClip;
+                    break;
+                case "DIE":
+                    _playerSound.clip = _deathClip;
+                    break;
+            }
+            _playerSound.Play();
+        }
+
         public void Move()
         {
             if (Mathf.Sign(transform.forward.x) != Mathf.Sign(dir.x) || Mathf.Sign(transform.forward.z) != Mathf.Sign(dir.z))
@@ -162,13 +188,14 @@ namespace josoomin
                 transform.Rotate(0, 1, 0);
             }
 
-            transform.forward = Vector3.Lerp(transform.forward, dir, _rotateSpeed* Time.deltaTime);
+            transform.forward = Vector3.Lerp(transform.forward, dir, _rotateSpeed * Time.deltaTime);
 
             _myRigidbody.MovePosition(gameObject.transform.position + dir * _speed * Time.deltaTime);
         }
 
         public void Jump()
         {
+            PlaySound("JUMP");
             _myAni.SetTrigger("Jump");
             _myRigidbody.AddForce(Vector3.up * _jumppower, ForceMode.Impulse);
         }
@@ -181,7 +208,7 @@ namespace josoomin
             }
         }
 
-        void OnCollisionStay (Collision collision)
+        void OnCollisionStay(Collision collision)
         {
             if (collision.gameObject.CompareTag("Plane"))
             {
@@ -243,7 +270,7 @@ namespace josoomin
 
         public void Attack()
         {
-            _swordSound.Play();
+            PlaySound("ATTACK");
             _attack = true;
             _attackCol.enabled = true;
             _myAni.SetTrigger("Attack");
@@ -271,6 +298,7 @@ namespace josoomin
 
         public void TakeDamage(float Damage)
         {
+            PlaySound("HIT");
             NotAttack();
             _myAni.SetTrigger("TakeDamage");
             _hp -= Damage;
@@ -289,6 +317,7 @@ namespace josoomin
 
         public void Die()
         {
+            PlaySound("DIE");
             _myAni.SetTrigger("Die");
             _die = true;
         }

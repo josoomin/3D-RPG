@@ -34,6 +34,7 @@ namespace josoomin
 
             if (gameObject.name == "Rock")
             {
+                ObjectSound.I.PlaySound("ROCK");
                 UI_Canvas.I._breakRock = true;
             }
         }

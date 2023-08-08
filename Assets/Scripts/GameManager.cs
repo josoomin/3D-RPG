@@ -14,6 +14,13 @@ namespace josoomin
             I = this;
         }
 
+        public AudioSource _BGM;
+
+        public AudioSource _objectSound;
+        public AudioSource _playerSound;
+        public AudioSource _playerstepSound;
+        public AudioSource _monsterSound;
+
         public GameObject _player;
         Player _playerCscript;
 
@@ -24,7 +31,7 @@ namespace josoomin
         public List<GameObject> _sponePointList;
 
         public GameObject _monster;
-        public List<string> _monsterList;
+        public List<GameObject> _monsterList;
 
         public GameObject _whiteParticleSystem;
 
@@ -49,10 +56,10 @@ namespace josoomin
             {
                 if (_sponePointList[i].name != "KeySponePoint")
                 {
-                    Instantiate(_monster);
-                    _monster.transform.position = _sponePointList[i].transform.position;
-                    _monster.name = "Monster" + i;
-                    _monsterList.Add(_monster.name + "(Clone)");
+                    GameObject _cloneMon = Instantiate(_monster);
+                    _cloneMon.transform.position = _sponePointList[i].transform.position;
+                    _cloneMon.name = "Monster" + i;
+                    _monsterList.Add(_cloneMon);
                 }
             }
 
@@ -66,6 +73,21 @@ namespace josoomin
                 {
                     _mapObjectList[i].SetActive(false);
                 }
+            }
+        }
+
+        public void SetSoundLevel(float BGMLevel, float SFXLevel)
+        {
+            _BGM.volume = BGMLevel;
+
+            _objectSound.volume = SFXLevel;
+            _playerSound.volume = SFXLevel;
+            _playerstepSound.volume = SFXLevel;
+
+            for (int i = 0; i < _monsterList.Count; i++)
+            {
+                _monsterSound = _monsterList[i].GetComponent<AudioSource>();
+                _monsterSound.volume = SFXLevel;
             }
         }
 
@@ -106,7 +128,7 @@ namespace josoomin
 
         public void ReStart()
         {
-            SceneManager.LoadScene(0);
+            SceneManager.LoadScene(1);
             Time.timeScale = 1;
         }
     }

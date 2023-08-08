@@ -10,6 +10,11 @@ namespace josoomin
         Transform target; // 플레이어
         Animator _myAni; // 내 애니메이터
 
+        public AudioSource _monsterSound; // 몬스터 소리 
+
+        public AudioClip _attackClip; // 공격할 때 나는 소리
+        public AudioClip _deathClip; // 죽을때 나는 소리
+
         public BoxCollider _myAttackTrigger; // 내 공격 콜라이더
         float _attackLange = 0.75f; // 내 공격시전범위
 
@@ -49,6 +54,23 @@ namespace josoomin
             }
         }
 
+        void MonsterSound(string action)
+        {
+            switch (action)
+            {
+                case "ATTACK":
+                    _monsterSound.clip = _attackClip;
+                    break;
+                //case "HIT":
+                //    _monsterSound.clip = _hitClip;
+                //    break;
+                case "DIE":
+                    _monsterSound.clip = _deathClip;
+                    break;
+            }
+            _monsterSound.Play();
+        }
+
         void FollowTarget()
         {
             float distance = Vector3.Distance(transform.position, target.position);
@@ -63,8 +85,7 @@ namespace josoomin
 
             else if (distance < _attackLange && target.GetComponent<Player>()._die == false)
             {
-                _myAni.SetTrigger("Attack 02");
-                _myAni.SetBool("Run Forward", false);
+                Attack();
             }
 
             else
@@ -74,8 +95,15 @@ namespace josoomin
             }
         }
 
+        void Attack()
+        {
+            _myAni.SetTrigger("Attack 02");
+            _myAni.SetBool("Run Forward", false);
+        }
+
         void OnAttackCol()
         {
+            MonsterSound("ATTACK");
             _myAttackTrigger.enabled = true;
         }
 
@@ -111,7 +139,6 @@ namespace josoomin
 
         public void TakeDamage(float damage)
         {
-
             _hp -= damage;
             _takeDamage = true;
             _myAni.SetTrigger("Take Damage");
@@ -125,16 +152,17 @@ namespace josoomin
 
         void Die()
         {
+            MonsterSound("DIE");
             _die = true;
             _myAni.SetTrigger("Die");
             _myAttackTrigger.enabled = false;
             GameManager.I._deathMonsterCount += 1;
 
-            List<string> _MonLi = GameManager.I._monsterList;
+            List<GameObject> _MonLi = GameManager.I._monsterList;
 
             for (int i = 0; i < _MonLi.Count; i++)
             {
-                if (_MonLi[i] == gameObject.name)
+                if (_MonLi[i].name == gameObject.name)
                 {
                     _MonLi.RemoveAt(i);
                     break;

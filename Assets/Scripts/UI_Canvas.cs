@@ -11,6 +11,17 @@ namespace josoomin
     {
         public static UI_Canvas I;
 
+        public GameObject _Setting;
+
+        float _nowBGMLevel;
+        float _nowSFXLevel;
+
+        public Slider _BGMSlider;
+        public Slider _SFXSlider;
+
+        public Text _BGMText;
+        public Text _SFXText;
+
         public GameObject _player;
         Player _playerScript;
 
@@ -112,6 +123,7 @@ namespace josoomin
             _myState.SetActive(false);
             _itemIcons.SetActive(false);
             _menu.SetActive(false);
+            _Setting.SetActive(false);
             _questActive = false;
             _inventoryActive = false;
             _StateActive = false;
@@ -136,6 +148,9 @@ namespace josoomin
             _ATKText.text = _playerScript._ATK.ToString();
             _DEFText.text = _playerScript._DEF.ToString();
             _SPDText.text = _playerScript._speed.ToString();
+
+            _BGMText.text = Mathf.FloorToInt(_BGMSlider.value * 100).ToString();
+            _SFXText.text = Mathf.FloorToInt(_SFXSlider.value * 100).ToString();
 
             if (_inventoryActive || _questActive || _StateActive)
             {
@@ -463,9 +478,39 @@ namespace josoomin
             Time.timeScale = 1;
         }
 
+        public void OpenSetting()
+        {
+            _nowBGMLevel = GameManager.I._BGM.volume;
+            _nowSFXLevel = GameManager.I._objectSound.volume;
+
+            _BGMSlider.value = _nowBGMLevel;
+            _SFXSlider.value = _nowSFXLevel;
+
+            _Setting.SetActive(true);
+        }
+
+        public void SetSound()
+        {
+            _nowBGMLevel = _BGMSlider.value;
+            _nowSFXLevel = _SFXSlider.value;
+
+            GameManager.I.SetSoundLevel(_nowBGMLevel, _nowSFXLevel);
+        }
+
+        public void CloseOption()
+        {
+            GameManager.I.SetSoundLevel(_nowBGMLevel, _nowSFXLevel);
+            _Setting.SetActive(false);
+        }
+
         public void RestartGame()
         {
             GameManager.I.ReStart();
+        }
+
+        public void ShutDown()
+        {
+            Application.Quit();
         }
     }
 }

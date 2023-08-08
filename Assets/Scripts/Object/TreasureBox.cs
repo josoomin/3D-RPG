@@ -18,6 +18,7 @@ namespace josoomin
 
         public override void ActiveObject(GameObject Player)
         {
+            ObjectSound.I.PlaySound("BOX");
             base.ActiveObject(Player);
 
             Player _Player = Player.GetComponent<Player>();
