@@ -6,50 +6,63 @@ namespace josoomin
 {
     public class Boss : MonoBehaviour
     {
+        public Transform _firePoint;
+
         public GameObject _fireBall;
         public List<GameObject> _fireBallList;
         public Transform _fierPool;
 
-        Rigidbody _myRigidbody; // ³» ¸®Áöµå ¹Ùµğ
-        Transform target; // ÇÃ·¹ÀÌ¾î
-        Animator _myAni; // ³» ¾Ö´Ï¸ŞÀÌÅÍ
+        Rigidbody _myRigidbody; // ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ùµï¿½
+        Transform target; // ï¿½Ã·ï¿½ï¿½Ì¾ï¿½
+        Animator _myAni; // ï¿½ï¿½ ï¿½Ö´Ï¸ï¿½ï¿½ï¿½ï¿½ï¿½
 
-        public AudioSource _monsterSound; // ¸ó½ºÅÍ ¼Ò¸® 
+        public AudioSource _bossSound; // ï¿½ï¿½ï¿½ï¿½ ï¿½Ò¸ï¿½ 
 
-        public AudioClip _attackClip; // °ø°İÇÒ ¶§ ³ª´Â ¼Ò¸®
-        public AudioClip _deathClip; // Á×À»¶§ ³ª´Â ¼Ò¸®
+        public AudioClip _attackClip; // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ò¸ï¿½
+        public AudioClip _deathClip; // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ò¸ï¿½
 
-        public BoxCollider _myAttackTrigger; // ³» °ø°İ Äİ¶óÀÌ´õ
-        float _attackLange = 0.75f; // ³» °ø°İ½ÃÀü¹üÀ§
+        public BoxCollider _myAttackTrigger; // ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½İ¶ï¿½ï¿½Ì´ï¿½
+        float _attackLange; // ï¿½ï¿½ ï¿½ï¿½ï¿½İ½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+        float _shortAttack = 2f;
+        float _longAttack = 10f;
 
-        float _ATK = 20f; // ³» °ø°İ·Â
-        public float _hp; // ³» Ã¼·Â
+        float _ATK = 20f; // ï¿½ï¿½ ï¿½ï¿½ï¿½İ·ï¿½
+        public float _hp; // ï¿½ï¿½ Ã¼ï¿½ï¿½
 
-        bool _takeDamage; // ³»°¡ °ø°İÀ» ¹Ş´Â ÁßÀÎÁö
-        bool _die; // ³»°¡ Á×¾ú´ÂÁö
+        bool _nowAttack; //í˜„ì¬ ê³µê²© ì¤‘ì¸ì§€
+        bool _takeDamage; // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ş´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+        bool _die; // ï¿½ï¿½ï¿½ï¿½ ï¿½×¾ï¿½ï¿½ï¿½ï¿½ï¿½
 
-        //Ãß°İ ¼Óµµ
+        int _pattern;
+
+        //ï¿½ß°ï¿½ ï¿½Óµï¿½
         [SerializeField] [Range(1f, 4f)] float moveSpeed = 1f;
 
-        //±ÙÁ¢ °Å¸®
-        [SerializeField] [Range(0f, 10f)] float contactDistance = 10f;
+        //ï¿½ï¿½ï¿½ï¿½ ï¿½Å¸ï¿½
+        [SerializeField] [Range(0f, 100f)] float contactDistance = 50f;
 
         void Start()
         {
-            for (int i = 0; i < 10; i++)
+            _pattern = Random.Range(1, 2);
+
+            for (int i = 0; i < 100; i++)
             {
                 GameObject _FB = Instantiate(_fireBall);
                 _fireBallList.Add(_FB);
                 _fireBallList[i].transform.position = _fierPool.position;
                 _fireBallList[i].transform.parent = _fierPool;
-                _fireBallList[i].SetActive(false);
 
+                FireBall _fbc = _fireBallList[i].GetComponent<FireBall>();
+                _fbc._firePool = _fierPool;
+                _fbc._fireBallList = _fireBallList;
+                _fireBallList[i].SetActive(false);
             }
 
             _myRigidbody = GetComponent<Rigidbody>();
             target = GameObject.FindGameObjectWithTag("Player").GetComponent<Transform>();
             _myAni = GetComponent<Animator>();
             _myAttackTrigger.enabled = false;
+            _nowAttack = false;
 
             _hp = 500f;
             _die = false;
@@ -73,16 +86,16 @@ namespace josoomin
             switch (action)
             {
                 case "ATTACK":
-                    _monsterSound.clip = _attackClip;
+                    _bossSound.clip = _attackClip;
                     break;
                 //case "HIT":
                 //    _monsterSound.clip = _hitClip;
                 //    break;
                 case "DIE":
-                    _monsterSound.clip = _deathClip;
+                    _bossSound.clip = _deathClip;
                     break;
             }
-            _monsterSound.Play();
+            _bossSound.Play();
         }
 
         void FollowTarget()
@@ -97,32 +110,45 @@ namespace josoomin
                 transform.LookAt(target);
             }
 
-            else if (distance < _attackLange && target.GetComponent<Player>()._die == false)
-            {
-                int _Patter = Random.Range(1, 2);
-                Attack(_Patter);
-            }
-
             else
             {
                 _myRigidbody.velocity = Vector2.zero;
                 _myAni.SetBool("Run Forward", false);
             }
+
+            if (!_nowAttack)
+            {
+                if (_pattern == 1)
+                {
+                    _attackLange = _shortAttack;
+                }
+                else if (_pattern == 2)
+                {
+                    _attackLange = _longAttack;
+                }
+
+                else if (distance < _attackLange && target.GetComponent<Player>()._die == false)
+                {
+                    Attack(_pattern);
+                }
+            }
+
+
         }
 
         void Attack(int patter)
         {
+            _nowAttack = true;
+
             if (patter == 1)
             {
                 _myAni.SetTrigger("Attack 01");
-                _myAni.SetBool("Run Forward", false);
             }
             else if (patter == 2)
             {
                 _myAni.SetTrigger("Attack 02");
-
-
             }
+            _myAni.SetBool("Run Forward", false);
         }
 
         void OnAttackCol()
@@ -133,7 +159,17 @@ namespace josoomin
 
         void OffAttackCol()
         {
+            _nowAttack = false;
             _myAttackTrigger.enabled = false;
+            _pattern = Random.Range(1, 2);
+        }
+
+        void FireBall()
+        {
+            _fireBallList[0].SetActive(true);
+            _fireBallList[0].transform.position = _firePoint.position;
+            _fireBallList.RemoveAt(0);
+            _pattern = Random.Range(1, 2);
         }
 
         private void OnTriggerEnter(Collider other)
@@ -164,14 +200,7 @@ namespace josoomin
         public void TakeDamage(float damage)
         {
             _hp -= damage;
-            _takeDamage = true;
-            _myAni.SetTrigger("Take Damage");
             _myAttackTrigger.enabled = false;
-        }
-
-        public void NoTakeDamage()
-        {
-            _takeDamage = false;
         }
 
         void Die()

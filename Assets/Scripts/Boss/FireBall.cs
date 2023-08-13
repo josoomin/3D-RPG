@@ -6,7 +6,10 @@ namespace josoomin
 {
     public class FireBall : MonoBehaviour
     {
-        float _moveSpeed = 2f;
+        public Transform _firePool;
+        public List<GameObject> _fireBallList;
+
+        float _moveSpeed = 10f;
         float _fireBallDamage = 10f;
 
         void Start()
@@ -21,9 +24,6 @@ namespace josoomin
 
         private void OnTriggerEnter(Collider other)
         {
-            gameObject.SetActive(false);
-            gameObject.transform.position = gameObject.transform.parent.transform.position;
-
             if (other.tag == "Player")
             {
                 Player _PL = other.GetComponent<Player>();
@@ -40,10 +40,17 @@ namespace josoomin
                         else
                             _PL.TakeDamage(_dmg);
                     }
-
                     else
                         _PL.TakeDamage(_fireBallDamage);
                 }
+            }
+
+            if (other.tag == "Player" || other.tag == "Wall")
+            {
+                gameObject.transform.position = _firePool.position;
+                gameObject.transform.parent = _firePool;
+                _fireBallList.Add(gameObject);
+                gameObject.SetActive(false);
             }
         }
     }

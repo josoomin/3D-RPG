@@ -40,18 +40,20 @@ namespace josoomin
 
         void Start()
         {
+            Application.targetFrameRate = 60;
+
             _playerCscript = _player.GetComponent<Player>();
 
             _whiteParticleSystem.SetActive(false);
 
-            //¸ðµç ½ºÆù Æ÷ÀÎÆ® ¹è¿­¿¡ Ãß°¡
+            //ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Æ® ï¿½è¿­ï¿½ï¿½ ï¿½ß°ï¿½
             for (int i = 0; i < _sponePoints.transform.childCount; i++)
             {
                 GameObject _Point = _sponePoints.transform.GetChild(i).gameObject;
                 _sponePointList.Add(_Point);
             }
 
-            //¸ó½ºÅÍ °¢ ½ºÆù Æ÷ÀÎÆ®¿¡ »ý¼º
+            //ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
             for (int i = 0; i < _sponePointList.Count; i++)
             {
                 if (_sponePointList[i].name != "KeySponePoint")
@@ -63,7 +65,7 @@ namespace josoomin
                 }
             }
 
-            //¸Ê¿¡ ¿ÀºêÁ§Æ® ÀÚ½Ä°³Ã¼ ¹è¿­¿¡ Ãß°¡
+            //ï¿½Ê¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ® ï¿½Ú½Ä°ï¿½Ã¼ ï¿½è¿­ï¿½ï¿½ ï¿½ß°ï¿½
             for (int i = 0; i < _mapObject.transform.childCount; i++)
             {
                 GameObject _Item = _mapObject.transform.GetChild(i).gameObject;

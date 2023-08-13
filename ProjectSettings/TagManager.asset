@@ -13,6 +13,8 @@ TagManager:
   - GetOffPoint
   - PlusButton
   - MinusButton
+  - Wall
+  - Boss
   layers:
   - Default
   - TransparentFX

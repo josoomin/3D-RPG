@@ -14,6 +14,12 @@ namespace josoomin
                 Monster _monsterC = other.GetComponent<Monster>();
                 _monsterC.TakeDamage(_player._ATK);
             }
+
+            else if (other.CompareTag("Boss"))
+            {
+                Boss _BC = other.GetComponent<Boss>();
+                _BC.TakeDamage(_player._ATK);
+            }
         }
     }
 }

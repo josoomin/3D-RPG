@@ -21,8 +21,8 @@ namespace josoomin
         float _ATK = 5f; // 내 공격력
         public float _hp; // 내 체력
 
-        bool _takeDamage; // 내가 공격을 받는 중인지
-        bool _die; // 내가 죽었는지
+        [SerializeField] bool _takeDamage; // 내가 공격을 받는 중인지
+        [SerializeField] bool _die; // 내가 죽었는지
 
         //추격 속도
         [SerializeField] [Range(1f, 4f)] float moveSpeed = 1f;
