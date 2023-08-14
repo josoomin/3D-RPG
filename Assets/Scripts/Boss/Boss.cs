@@ -34,9 +34,10 @@ namespace josoomin
         bool _die; // ���� �׾�����
 
         int _pattern;
+        bool _setPattern;
 
         //�߰� �ӵ�
-        [SerializeField] [Range(1f, 4f)] float moveSpeed = 1f;
+        [SerializeField] [Range(1f, 4f)] float moveSpeed = 3f;
 
         //���� �Ÿ�
         [SerializeField] [Range(0f, 100f)] float contactDistance = 50f;
@@ -55,7 +56,9 @@ namespace josoomin
                 FireBall _fbc = _fireBallList[i].GetComponent<FireBall>();
                 _fbc._firePool = _fierPool;
                 _fbc._fireBallList = _fireBallList;
+                _fbc._boss = gameObject.transform;
                 _fireBallList[i].SetActive(false);
+                _setPattern = true;
             }
 
             _myRigidbody = GetComponent<Rigidbody>();
@@ -100,6 +103,8 @@ namespace josoomin
 
         void FollowTarget()
         {
+            SetPattern();
+
             float distance = Vector3.Distance(transform.position, target.position);
             _myAttackTrigger.enabled = false;
 
@@ -110,41 +115,47 @@ namespace josoomin
                 transform.LookAt(target);
             }
 
+            else if (distance < _attackLange && target.GetComponent<Player>()._die == false)
+            {
+                Attack(_pattern);
+            }
+
             else
             {
                 _myRigidbody.velocity = Vector2.zero;
                 _myAni.SetBool("Run Forward", false);
             }
+        }
 
-            if (!_nowAttack)
+        void SetPattern()
+        {
+            if (_setPattern)
             {
-                if (_pattern == 1)
-                {
-                    _attackLange = _shortAttack;
-                }
-                else if (_pattern == 2)
-                {
-                    _attackLange = _longAttack;
-                }
-
-                else if (distance < _attackLange && target.GetComponent<Player>()._die == false)
-                {
-                    Attack(_pattern);
-                }
+                _pattern = Random.Range(1, 11);
+                Debug.Log("현재 패턴: " + _pattern);
             }
 
-
+            if (_pattern % 2 == 0)
+            {
+                _attackLange = _shortAttack;
+                _setPattern = false;
+            }
+            else if (_pattern % 2 != 0)
+            {
+                _attackLange = _longAttack;
+                _setPattern = false;
+            }
         }
 
         void Attack(int patter)
         {
             _nowAttack = true;
 
-            if (patter == 1)
+            if (patter % 2 == 0)
             {
                 _myAni.SetTrigger("Attack 01");
             }
-            else if (patter == 2)
+            else if (patter % 2 != 0)
             {
                 _myAni.SetTrigger("Attack 02");
             }
@@ -159,9 +170,11 @@ namespace josoomin
 
         void OffAttackCol()
         {
-            _nowAttack = false;
             _myAttackTrigger.enabled = false;
-            _pattern = Random.Range(1, 2);
+            _nowAttack = false;
+            _setPattern = true;
+
+            SetPattern();
         }
 
         void FireBall()
@@ -169,7 +182,10 @@ namespace josoomin
             _fireBallList[0].SetActive(true);
             _fireBallList[0].transform.position = _firePoint.position;
             _fireBallList.RemoveAt(0);
-            _pattern = Random.Range(1, 2);
+            _nowAttack = false;
+            _setPattern = true;
+
+            SetPattern();
         }
 
         private void OnTriggerEnter(Collider other)
@@ -231,6 +247,7 @@ namespace josoomin
         void DestroyMe()
         {
             Destroy(gameObject);
+            GameManager.I.GameClear();
         }
     }
 }

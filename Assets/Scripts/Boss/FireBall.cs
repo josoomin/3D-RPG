@@ -6,6 +6,8 @@ namespace josoomin
 {
     public class FireBall : MonoBehaviour
     {
+        public Transform _boss;
+
         public Transform _firePool;
         public List<GameObject> _fireBallList;
 
@@ -14,12 +16,12 @@ namespace josoomin
 
         void Start()
         {
-
+            transform.rotation = _boss.rotation;
         }
 
         void Update()
         {
-            transform.Translate(new Vector3(0, 0, -_moveSpeed * Time.deltaTime));
+            transform.Translate(new Vector3(0, 0, _moveSpeed * Time.deltaTime));
         }
 
         private void OnTriggerEnter(Collider other)
