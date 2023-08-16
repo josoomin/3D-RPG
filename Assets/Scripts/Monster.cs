@@ -156,7 +156,6 @@ namespace josoomin
             _die = true;
             _myAni.SetTrigger("Die");
             _myAttackTrigger.enabled = false;
-            GameManager.I._deathMonsterCount += 1;
 
             List<GameObject> _MonLi = GameManager.I._monsterList;
 

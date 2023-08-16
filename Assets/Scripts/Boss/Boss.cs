@@ -27,6 +27,7 @@ namespace josoomin
         float _longAttack = 10f;
 
         float _ATK = 20f; // �� ���ݷ�
+        public float _maxHP = 200;
         public float _hp; // �� ü��
 
         bool _nowAttack; //현재 공격 중인지
@@ -44,7 +45,7 @@ namespace josoomin
 
         void Start()
         {
-            _pattern = Random.Range(1, 2);
+            SetPattern();
 
             for (int i = 0; i < 100; i++)
             {
@@ -67,7 +68,7 @@ namespace josoomin
             _myAttackTrigger.enabled = false;
             _nowAttack = false;
 
-            _hp = 500f;
+            _hp = _maxHP;
             _die = false;
         }
 
@@ -103,8 +104,6 @@ namespace josoomin
 
         void FollowTarget()
         {
-            SetPattern();
-
             float distance = Vector3.Distance(transform.position, target.position);
             _myAttackTrigger.enabled = false;
 
@@ -170,6 +169,7 @@ namespace josoomin
 
         void OffAttackCol()
         {
+            Debug.Log("공콜 꺼짐");
             _myAttackTrigger.enabled = false;
             _nowAttack = false;
             _setPattern = true;
@@ -225,23 +225,6 @@ namespace josoomin
             _die = true;
             _myAni.SetTrigger("Die");
             _myAttackTrigger.enabled = false;
-            GameManager.I._deathMonsterCount += 1;
-
-            List<GameObject> _MonLi = GameManager.I._monsterList;
-
-            for (int i = 0; i < _MonLi.Count; i++)
-            {
-                if (_MonLi[i].name == gameObject.name)
-                {
-                    _MonLi.RemoveAt(i);
-                    break;
-                }
-            }
-
-            if (_MonLi.Count == 0)
-            {
-                GameManager.I.DropKey();
-            }
         }
 
         void DestroyMe()

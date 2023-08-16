@@ -7,6 +7,8 @@ namespace josoomin
 {
     public class Player : MonoBehaviour
     {
+        public GameObject _camera;
+
         public GameObject _closeObject; // 닿고 있는 오브젝트
         public GameObject _reSponePoint; // 떨어지면 다시 스폰되는 위치
 
@@ -37,7 +39,7 @@ namespace josoomin
 
         bool _plane; // 현재 바닥에 닿았는지 유무 확인
         public bool _defand; // 방어 중인지 확인
-        bool _attack; // 내가 공격 중 인지
+        bool _attack; // 내가 공격 중인지
         public bool _die; // 내가 죽었는지
 
         public GameObject _inven; // 인벤토리
@@ -159,6 +161,12 @@ namespace josoomin
             {
                 UI_Canvas.I.OpenMenu();
             }
+
+            if (Input.GetKeyDown(KeyCode.R))
+            {
+                if (GameManager.I._gameClear)
+                    GameManager.I.ReStart();
+            }
         }
 
         void PlaySound(string action)
@@ -183,12 +191,19 @@ namespace josoomin
 
         public void Move()
         {
+            //Vector3 cameraForward = Camera.main.transform.forward;
+            //cameraForward.y = 0;
+
+            //Vector3 moveDirection = (cameraForward * dir.z + Camera.main.transform.right * dir.x).normalized;
+
+            //transform.Translate(moveDirection * _speed * Time.deltaTime);
+
             if (Mathf.Sign(transform.forward.x) != Mathf.Sign(dir.x) || Mathf.Sign(transform.forward.z) != Mathf.Sign(dir.z))
             {
                 transform.Rotate(0, 1, 0);
             }
 
-            transform.forward = Vector3.Lerp(transform.forward, dir, _rotateSpeed * Time.deltaTime);
+            transform.forward = Vector3.Lerp(transform.forward, dir * _camera.transform.rotation.y, _rotateSpeed * Time.deltaTime);
 
             _myRigidbody.MovePosition(gameObject.transform.position + dir * _speed * Time.deltaTime);
         }
@@ -213,6 +228,15 @@ namespace josoomin
             if (collision.gameObject.CompareTag("Plane"))
             {
                 _plane = true;
+            }
+
+            if (collision.gameObject.transform.parent.name == "Plane3")
+            {
+                UI_Canvas.I.BossHpOnOff(true);
+            }
+            else
+            {
+                UI_Canvas.I.BossHpOnOff(false);
             }
         }
 

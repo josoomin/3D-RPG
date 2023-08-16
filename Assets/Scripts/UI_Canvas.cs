@@ -64,6 +64,9 @@ namespace josoomin
         public Slider _hpBar; // 내 채력바 UI
         public Text _hpText; // 내 체력 표시 택스트
 
+        public Boss _Boss; // 보스 몬스터 스크립트
+        public Slider _bossHpBar; //보스 체력바
+
         public GameObject _myState; // 플레이어 스테이터스
         public bool _StateActive; // 스테이터스 창이 켜져있는지
 
@@ -130,6 +133,7 @@ namespace josoomin
             _playerUIActive = false;
             _alarmText.enabled = false;
             _breakRock = false;
+            _bossHpBar.gameObject.SetActive(false);
 
             for (int i = 0; i < _contents.transform.childCount; i++)
             {
@@ -142,6 +146,8 @@ namespace josoomin
         {
             _hpBar.value = ((_playerScript._hp / _playerScript._maxHp) * 100);
             _hpText.text = (_playerScript._hp + "/" + _playerScript._maxHp);
+
+            _bossHpBar.value = ((_Boss._hp / _Boss._maxHP) * 100);
 
             _moneyText.text = _playerScript._money.ToString();
             _HPText.text = _playerScript._maxHp.ToString();
@@ -511,6 +517,11 @@ namespace josoomin
         public void ShutDown()
         {
             Application.Quit();
+        }
+
+        public void BossHpOnOff(bool _b)
+        {
+            _bossHpBar.gameObject.SetActive(_b);
         }
     }
 }

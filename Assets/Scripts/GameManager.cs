@@ -35,8 +35,10 @@ namespace josoomin
 
         public GameObject _whiteParticleSystem;
 
-        public int _deathMonsterCount;
         public int _breakRockCount;
+
+        public GameObject _gameClearUI;
+        public bool _gameClear;
 
         void Start()
         {
@@ -76,6 +78,9 @@ namespace josoomin
                     _mapObjectList[i].SetActive(false);
                 }
             }
+
+            _gameClearUI.SetActive(false);
+            _gameClear = false;
         }
 
         public void SetSoundLevel(float BGMLevel, float SFXLevel)
@@ -136,7 +141,8 @@ namespace josoomin
 
         public void GameClear()
         {
-
+            _gameClear = true;
+            _gameClearUI.SetActive(true);
         }
     }
 }

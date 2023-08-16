@@ -7,11 +7,11 @@ namespace josoomin
 {
     public class Title_Canvas : MonoBehaviour
     {
-        public GameObject _settingMenu;
+        public GameObject _htp;
 
         private void Start()
         {
-            _settingMenu.SetActive(false);
+            _htp.SetActive(false);
         }
 
         public void GameStart()
@@ -19,9 +19,14 @@ namespace josoomin
             SceneManager.LoadScene(1);
         }
 
-        public void OpenSettingMenu()
+        public void OpenHowToPlay()
         {
-            _settingMenu.SetActive(true);
+            _htp.SetActive(true);
+        }
+
+        public void CloseHowToPlay()
+        {
+            _htp.SetActive(false);
         }
 
         public void ShutDown()
