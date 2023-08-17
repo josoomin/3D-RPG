@@ -164,7 +164,7 @@ namespace josoomin
 
             if (Input.GetKeyDown(KeyCode.R))
             {
-                if (GameManager.I._gameClear)
+                if (GameManager.I._gameClear || _die)
                     GameManager.I.ReStart();
             }
         }
@@ -191,21 +191,33 @@ namespace josoomin
 
         public void Move()
         {
-            //Vector3 cameraForward = Camera.main.transform.forward;
-            //cameraForward.y = 0;
+            Vector3 cameraForward = Camera.main.transform.forward;
+            cameraForward.y = 0;
 
-            //Vector3 moveDirection = (cameraForward * dir.z + Camera.main.transform.right * dir.x).normalized;
+            Vector3 moveDirection = (cameraForward * dir.z + Camera.main.transform.right * dir.x).normalized;
 
-            //transform.Translate(moveDirection * _speed * Time.deltaTime);
+            //transform.Translate(dir * _speed * Time.deltaTime);
+
+            transform.forward = Vector3.Lerp(transform.forward, moveDirection, _rotateSpeed * Time.deltaTime);
 
             if (Mathf.Sign(transform.forward.x) != Mathf.Sign(dir.x) || Mathf.Sign(transform.forward.z) != Mathf.Sign(dir.z))
             {
                 transform.Rotate(0, 1, 0);
             }
 
-            transform.forward = Vector3.Lerp(transform.forward, dir * _camera.transform.rotation.y, _rotateSpeed * Time.deltaTime);
+            //transform.forward = Vector3.Lerp(transform.forward, dir, _rotateSpeed * Time.deltaTime);
 
-            _myRigidbody.MovePosition(gameObject.transform.position + dir * _speed * Time.deltaTime);
+            //_myRigidbody.MovePosition(gameObject.transform.position + dir * _speed * Time.deltaTime);
+
+            if (dir.z >= 0)
+                transform.Translate(Vector3.forward * Time.deltaTime * _speed * dir.z);
+            else if (dir.z <= 0)
+                transform.Translate(Vector3.back * Time.deltaTime * _speed * dir.z);
+
+            if (dir.x >= 0)
+                transform.Translate(Vector3.forward * Time.deltaTime * _speed * dir.x);
+            else if (dir.x <= 0)
+                transform.Translate(Vector3.back * Time.deltaTime * _speed * dir.x);
         }
 
         public void Jump()
@@ -341,6 +353,7 @@ namespace josoomin
 
         public void Die()
         {
+            GameManager.I.GameOver();
             PlaySound("DIE");
             _myAni.SetTrigger("Die");
             _die = true;

@@ -20,6 +20,7 @@ namespace josoomin
         public AudioSource _playerSound;
         public AudioSource _playerstepSound;
         public AudioSource _monsterSound;
+        public AudioSource _BossSound;
 
         public GameObject _player;
         Player _playerCscript;
@@ -36,6 +37,8 @@ namespace josoomin
         public GameObject _whiteParticleSystem;
 
         public int _breakRockCount;
+
+        public GameObject _gameOverUI;
 
         public GameObject _gameClearUI;
         public bool _gameClear;
@@ -80,6 +83,7 @@ namespace josoomin
             }
 
             _gameClearUI.SetActive(false);
+            _gameOverUI.SetActive(false);
             _gameClear = false;
         }
 
@@ -90,6 +94,7 @@ namespace josoomin
             _objectSound.volume = SFXLevel;
             _playerSound.volume = SFXLevel;
             _playerstepSound.volume = SFXLevel;
+            _BossSound.volume = SFXLevel;
 
             for (int i = 0; i < _monsterList.Count; i++)
             {
@@ -143,6 +148,11 @@ namespace josoomin
         {
             _gameClear = true;
             _gameClearUI.SetActive(true);
+        }
+
+        public void GameOver()
+        {
+            _gameOverUI.SetActive(true);
         }
     }
 }

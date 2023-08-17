@@ -18,7 +18,8 @@ namespace josoomin
 
         public AudioSource _bossSound; // ���� �Ҹ� 
 
-        public AudioClip _attackClip; // ������ �� ���� �Ҹ�
+        public AudioClip _attackClip1; // ������ �� ���� �Ҹ�
+        public AudioClip _attackClip2; // ������ �� ���� �Ҹ�
         public AudioClip _deathClip; // ������ ���� �Ҹ�
 
         public BoxCollider _myAttackTrigger; // �� ���� �ݶ��̴�
@@ -89,12 +90,12 @@ namespace josoomin
         {
             switch (action)
             {
-                case "ATTACK":
-                    _bossSound.clip = _attackClip;
+                case "ATTACK1":
+                    _bossSound.clip = _attackClip1;
                     break;
-                //case "HIT":
-                //    _monsterSound.clip = _hitClip;
-                //    break;
+                case "ATTACK2":
+                    _bossSound.clip = _attackClip2;
+                    break;
                 case "DIE":
                     _bossSound.clip = _deathClip;
                     break;
@@ -152,10 +153,13 @@ namespace josoomin
 
             if (patter % 2 == 0)
             {
+                transform.LookAt(target);
                 _myAni.SetTrigger("Attack 01");
             }
             else if (patter % 2 != 0)
             {
+                transform.LookAt(target);
+                BossSound("ATTACK2");
                 _myAni.SetTrigger("Attack 02");
             }
             _myAni.SetBool("Run Forward", false);
@@ -163,13 +167,12 @@ namespace josoomin
 
         void OnAttackCol()
         {
-            BossSound("ATTACK");
+            BossSound("ATTACK1");
             _myAttackTrigger.enabled = true;
         }
 
         void OffAttackCol()
         {
-            Debug.Log("공콜 꺼짐");
             _myAttackTrigger.enabled = false;
             _nowAttack = false;
             _setPattern = true;
