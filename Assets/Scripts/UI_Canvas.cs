@@ -297,12 +297,12 @@ namespace josoomin
 
                 if (Title.text == "몬스터 퇴치")
                 {
-                    Info.text = "중앙섬에 있는 몬스터를 모두 퇴치하자 \n\n 보상: 500골드";
+                    Info.text = "중앙섬에 있는 몬스터를 모두 퇴치하세요 \n\n 보상: 500골드";
                 }
 
                 else if (Title.text == "바위 부수기")
                 {
-                    Info.text = "마지막 섬을 막는 바위를 부숴라 \n\n 보상: 1000골드";
+                    Info.text = "마지막 섬을 막는 바위를 파괴하세요 \n\n 보상: 1000골드";
                 }
             }
         }

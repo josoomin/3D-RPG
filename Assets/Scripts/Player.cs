@@ -68,104 +68,107 @@ namespace josoomin
 
         void Update()
         {
-            dir.x = Input.GetAxis("Horizontal");
-            dir.z = Input.GetAxis("Vertical");
-            dir.Normalize();
-
-            if (UI_Canvas.I._talk == false && !_die)
+            if (!GameManager.I._gameClear)
             {
-                if (!UI_Canvas.I._playerUIActive)
+                dir.x = Input.GetAxis("Horizontal");
+                dir.z = Input.GetAxis("Vertical");
+                dir.Normalize();
+
+                if (UI_Canvas.I._talk == false && !_die)
                 {
-                    if (!_attack && !_defand)
+                    if (!UI_Canvas.I._playerUIActive)
                     {
-                        if (dir != Vector3.zero)
+                        if (!_attack && !_defand)
                         {
-                            if (!_stepSound.isPlaying && _plane)
-                                _stepSound.Play();
-
-                            Move();
-                            _myAni.SetBool("Walk", true);
-                        }
-                        else
-                        {
-                            _stepSound.Stop();
-                            _myAni.SetBool("Walk", false);
-                            _myRigidbody.angularVelocity = new Vector3(0, 0, 0);
-                        }
-
-                        if (_plane)
-                        {
-                            if (Input.GetMouseButtonDown(0))
+                            if (dir != Vector3.zero)
                             {
-                                Attack();
+                                if (!_stepSound.isPlaying && _plane)
+                                    _stepSound.Play();
+
+                                Move();
+                                _myAni.SetBool("Walk", true);
+                            }
+                            else
+                            {
+                                _stepSound.Stop();
+                                _myAni.SetBool("Walk", false);
+                                _myRigidbody.angularVelocity = new Vector3(0, 0, 0);
                             }
 
-                            if (Input.GetMouseButton(1))
+                            if (_plane)
                             {
-                                Defand();
+                                if (Input.GetMouseButtonDown(0))
+                                {
+                                    Attack();
+                                }
+
+                                if (Input.GetMouseButton(1))
+                                {
+                                    Defand();
+                                }
+
+                                if (Input.GetKeyDown(KeyCode.Space))
+                                {
+                                    Jump();
+                                }
+                            }
+                        }
+
+                        if (Input.GetMouseButtonUp(1))
+                        {
+                            NotDefand();
+                        }
+
+                        if (_hp <= 0)
+                        {
+                            Die();
+                        }
+
+                        if (Input.GetKeyDown(KeyCode.F))
+                        {
+                            if (UI_Canvas.I._closeNPC)
+                            {
+                                UI_Canvas.I.ActiveTalkWindow();
                             }
 
-                            if (Input.GetKeyDown(KeyCode.Space))
+                            if (UI_Canvas.I._closeKey)
                             {
-                                Jump();
+                                _closeObject.GetComponent<Key>().ActiveObject(gameObject);
+                            }
+
+                            if (UI_Canvas.I._closeTreasureBox || UI_Canvas.I._closeRock)
+                            {
+                                InteractionObject();
                             }
                         }
                     }
 
-                    if (Input.GetMouseButtonUp(1))
+                    if (Input.GetKeyDown(KeyCode.Q))
                     {
-                        NotDefand();
+                        UI_Canvas.I.PlayerUI(UI_Canvas.I._myQuest, ref UI_Canvas.I._questActive);
                     }
 
-                    if (_hp <= 0)
+                    if (Input.GetKeyDown(KeyCode.I))
                     {
-                        Die();
+                        UI_Canvas.I.PlayerUI(UI_Canvas.I._myInventory, ref UI_Canvas.I._inventoryActive);
                     }
 
-                    if (Input.GetKeyDown(KeyCode.F))
+                    if (Input.GetKeyDown(KeyCode.C))
                     {
-                        if (UI_Canvas.I._closeNPC)
-                        {
-                            UI_Canvas.I.ActiveTalkWindow();
-                        }
-
-                        if (UI_Canvas.I._closeKey)
-                        {
-                            _closeObject.GetComponent<Key>().ActiveObject(gameObject);
-                        }
-
-                        if (UI_Canvas.I._closeTreasureBox || UI_Canvas.I._closeRock)
-                        {
-                            InteractionObject();
-                        }
+                        UI_Canvas.I.PlayerUI(UI_Canvas.I._myState, ref UI_Canvas.I._StateActive);
                     }
                 }
 
-                if (Input.GetKeyDown(KeyCode.Q))
+                if (Input.GetKeyDown(KeyCode.Escape))
                 {
-                    UI_Canvas.I.PlayerUI(UI_Canvas.I._myQuest, ref UI_Canvas.I._questActive);
+                    UI_Canvas.I.OpenMenu();
                 }
 
-                if (Input.GetKeyDown(KeyCode.I))
+                if (Input.GetKeyDown(KeyCode.R))
                 {
-                    UI_Canvas.I.PlayerUI(UI_Canvas.I._myInventory, ref UI_Canvas.I._inventoryActive);
+                    if (GameManager.I._gameClear || _die)
+                        GameManager.I.ReStart();
                 }
-
-                if (Input.GetKeyDown(KeyCode.C))
-                {
-                    UI_Canvas.I.PlayerUI(UI_Canvas.I._myState, ref UI_Canvas.I._StateActive);
-                }
-            }
-
-            if (Input.GetKeyDown(KeyCode.Escape))
-            {
-                UI_Canvas.I.OpenMenu();
-            }
-
-            if (Input.GetKeyDown(KeyCode.R))
-            {
-                if (GameManager.I._gameClear || _die)
-                    GameManager.I.ReStart();
             }
         }
 
@@ -240,15 +243,16 @@ namespace josoomin
             if (collision.gameObject.CompareTag("Plane"))
             {
                 _plane = true;
-            }
 
-            if (collision.gameObject.transform.parent.name == "Plane3")
-            {
-                UI_Canvas.I.BossHpOnOff(true);
-            }
-            else
-            {
-                UI_Canvas.I.BossHpOnOff(false);
+                if (collision.gameObject.transform.parent.name == "Plane3")
+                {
+                    UI_Canvas.I.BossHpOnOff(true);
+                }
+
+                else
+                {
+                    UI_Canvas.I.BossHpOnOff(false);
+                }
             }
         }
 
