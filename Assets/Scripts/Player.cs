@@ -128,6 +128,7 @@ namespace josoomin
                         {
                             if (UI_Canvas.I._closeNPC)
                             {
+                                _myAni.SetBool("Walk", false);
                                 UI_Canvas.I.ActiveTalkWindow();
                             }
 
@@ -161,14 +162,21 @@ namespace josoomin
 
                 if (Input.GetKeyDown(KeyCode.Escape))
                 {
-                    UI_Canvas.I.OpenMenu();
-                }
+                    if (!UI_Canvas.I._menuBool)
+                    {
+                        UI_Canvas.I.OpenMenu();
+                    }
 
-                if (Input.GetKeyDown(KeyCode.R))
-                {
-                    if (GameManager.I._gameClear || _die)
-                        GameManager.I.ReStart();
+                    else if (UI_Canvas.I._menuBool)
+                    {
+                        UI_Canvas.I.CloseMenu();
+                    }
                 }
+            }
+            if (Input.GetKeyDown(KeyCode.R))
+            {
+                if (GameManager.I._gameClear || _die)
+                    GameManager.I.ReStart();
             }
         }
 
@@ -341,6 +349,19 @@ namespace josoomin
             PlaySound("HIT");
             NotAttack();
             _myAni.SetTrigger("TakeDamage");
+
+            if (_defand)
+            {
+                float _dmg = Damage - _DEF;
+
+                if (_dmg < 0)
+                    _hp -= 0;
+
+                else
+                    _hp -= _dmg;
+            }
+
+            else
             _hp -= Damage;
 
             if (_hp < 0)

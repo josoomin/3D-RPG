@@ -80,6 +80,7 @@ namespace josoomin
         public bool _closeKey;
         public bool _closeTreasureBox;
         public bool _closeRock;
+        public bool _menuBool;
 
         public bool _talk; // 현재 NPC와 대화중인지
 
@@ -126,6 +127,7 @@ namespace josoomin
             _myState.SetActive(false);
             _itemIcons.SetActive(false);
             _menu.SetActive(false);
+            _menuBool = false;
             _Setting.SetActive(false);
             _questActive = false;
             _inventoryActive = false;
@@ -474,12 +476,14 @@ namespace josoomin
 
         public void OpenMenu()
         {
+            _menuBool = true;
             _menu.SetActive(true);
             Time.timeScale = 0;
         }
 
         public void CloseMenu()
         {
+            _menuBool = false;
             _menu.SetActive(false);
             Time.timeScale = 1;
         }

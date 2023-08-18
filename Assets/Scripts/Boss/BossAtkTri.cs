@@ -2,17 +2,20 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BossAtkTri : MonoBehaviour
+namespace josoomin
 {
-    // Start is called before the first frame update
-    void Start()
+    public class BossAtkTri : MonoBehaviour
     {
-        
-    }
+        float _ATK = 20f;
 
-    // Update is called once per frame
-    void Update()
-    {
-        
+        private void OnTriggerEnter(Collider other)
+        {
+            Player _player = other.GetComponent<Player>();
+
+            if (other.tag == "Player" && _player._hp > 0)
+            {
+                _player.TakeDamage(_ATK);
+            }
+        }
     }
 }

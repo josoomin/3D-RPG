@@ -118,19 +118,7 @@ namespace josoomin
 
             if (other.tag == "Player" && _player._hp > 0)
             {
-                if (_player._defand)
-                {
-                    float _dmg = _ATK - _player._DEF;
-
-                    if (_dmg < 0)
-                        _player.TakeDamage(0);
-
-                    else
-                        _player.TakeDamage(_dmg);
-                }
-
-                else
-                    _player.TakeDamage(_ATK);
+                _player.TakeDamage(_ATK);
             }
 
             if (other.CompareTag("GetOffPoint"))
