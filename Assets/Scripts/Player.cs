@@ -64,6 +64,8 @@ namespace josoomin
             _money = 500;
             _ATK = 5f;
             _DEF = 1f;
+            _speed = 5f;
+            transform.position = _reSponePoint.transform.position;
         }
 
         void Update()

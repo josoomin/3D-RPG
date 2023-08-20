@@ -37,6 +37,8 @@ namespace josoomin
         int _pattern;
         bool _setPattern;
 
+        private Vector3 targetPosition;
+
         //�߰� �ӵ�
         [SerializeField] [Range(1f, 4f)] float moveSpeed = 3f;
 
@@ -111,7 +113,9 @@ namespace josoomin
             {
                 transform.position = Vector3.MoveTowards(transform.position, target.position, moveSpeed * Time.deltaTime);
                 _myAni.SetBool("Run Forward", true);
-                transform.LookAt(target);
+
+                targetPosition = new Vector3(target.transform.position.x, transform.position.y, target.transform.position.z);
+                transform.LookAt(targetPosition);
             }
 
             else if (distance < _attackLange && target.GetComponent<Player>()._die == false)

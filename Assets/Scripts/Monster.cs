@@ -21,6 +21,8 @@ namespace josoomin
         float _ATK = 5f; // 내 공격력
         public float _hp; // 내 체력
 
+        private Vector3 targetPosition;
+
         [SerializeField] bool _takeDamage; // 내가 공격을 받는 중인지
         [SerializeField] bool _die; // 내가 죽었는지
 
@@ -80,7 +82,9 @@ namespace josoomin
             {
                 transform.position = Vector3.MoveTowards(transform.position, target.position, moveSpeed * Time.deltaTime);
                 _myAni.SetBool("Run Forward", true);
-                transform.LookAt(target);
+
+                targetPosition = new Vector3(target.transform.position.x, transform.position.y, target.transform.position.z);
+                transform.LookAt(targetPosition);
             }
 
             else if (distance < _attackLange && target.GetComponent<Player>()._die == false)

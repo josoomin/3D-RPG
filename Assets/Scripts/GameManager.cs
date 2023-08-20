@@ -99,7 +99,7 @@ namespace josoomin
             for (int i = 0; i < _monsterList.Count; i++)
             {
                 _monsterSound = _monsterList[i].GetComponent<AudioSource>();
-                _monsterSound.volume = SFXLevel;
+                _monsterSound.volume = SFXLevel * 0.5f;
             }
         }
 
