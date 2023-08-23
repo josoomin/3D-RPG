@@ -135,7 +135,6 @@ namespace josoomin
             if (_setPattern)
             {
                 _pattern = Random.Range(1, 11);
-                Debug.Log("현재 패턴: " + _pattern);
             }
 
             if (_pattern % 2 == 0)

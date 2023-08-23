@@ -160,7 +160,7 @@ namespace josoomin
             _BGMText.text = Mathf.FloorToInt(_BGMSlider.value * 100).ToString();
             _SFXText.text = Mathf.FloorToInt(_SFXSlider.value * 100).ToString();
 
-            if (_inventoryActive || _questActive || _StateActive)
+            if (_talk || _inventoryActive || _questActive || _StateActive || _menuBool)
             {
                 _playerUIActive = true;
             }
@@ -354,7 +354,7 @@ namespace josoomin
             }
         }
 
-        public void PlayerUI(GameObject Chan, ref bool Set) // 플레이어의 UI 창을 껐다 켰다 한다.
+        public void PlayerUI(GameObject Chan, ref bool Set) 
         {
             if (Chan.name == "CharacterStats")
             {
@@ -486,6 +486,7 @@ namespace josoomin
             _menuBool = false;
             _menu.SetActive(false);
             Time.timeScale = 1;
+            CloseOption();
         }
 
         public void OpenSetting()
@@ -509,7 +510,6 @@ namespace josoomin
 
         public void CloseOption()
         {
-            GameManager.I.SetSoundLevel(_nowBGMLevel, _nowSFXLevel);
             _Setting.SetActive(false);
         }
 

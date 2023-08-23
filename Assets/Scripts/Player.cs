@@ -70,111 +70,109 @@ namespace josoomin
 
         void Update()
         {
-            if (!GameManager.I._gameClear)
+            dir.x = Input.GetAxis("Horizontal");
+            dir.z = Input.GetAxis("Vertical");
+            dir.Normalize();
+
+            if (!_die && !GameManager.I._gameClear)
             {
-                dir.x = Input.GetAxis("Horizontal");
-                dir.z = Input.GetAxis("Vertical");
-                dir.Normalize();
-
-                if (UI_Canvas.I._talk == false && !_die)
+                if (!UI_Canvas.I._playerUIActive)
                 {
-                    if (!UI_Canvas.I._playerUIActive)
+                    if (!_attack && !_defand)
                     {
-                        if (!_attack && !_defand)
+                        if (dir != Vector3.zero)
                         {
-                            if (dir != Vector3.zero)
-                            {
-                                if (!_stepSound.isPlaying && _plane)
-                                    _stepSound.Play();
+                            if (!_stepSound.isPlaying && _plane)
+                                _stepSound.Play();
 
-                                Move();
-                                _myAni.SetBool("Walk", true);
-                            }
-                            else
-                            {
-                                _stepSound.Stop();
-                                _myAni.SetBool("Walk", false);
-                                _myRigidbody.angularVelocity = new Vector3(0, 0, 0);
-                            }
-
-                            if (_plane)
-                            {
-                                if (Input.GetMouseButtonDown(0))
-                                {
-                                    Attack();
-                                }
-
-                                if (Input.GetMouseButton(1))
-                                {
-                                    Defand();
-                                }
-
-                                if (Input.GetKeyDown(KeyCode.Space))
-                                {
-                                    Jump();
-                                }
-                            }
+                            Move();
+                            _myAni.SetBool("Walk", true);
+                        }
+                        else
+                        {
+                            _stepSound.Stop();
+                            _myAni.SetBool("Walk", false);
+                            _myRigidbody.angularVelocity = new Vector3(0, 0, 0);
                         }
 
-                        if (Input.GetMouseButtonUp(1))
+                        if (_plane)
                         {
-                            NotDefand();
-                        }
-
-                        if (_hp <= 0)
-                        {
-                            Die();
-                        }
-
-                        if (Input.GetKeyDown(KeyCode.F))
-                        {
-                            if (UI_Canvas.I._closeNPC)
+                            if (Input.GetMouseButtonDown(0))
                             {
-                                _myAni.SetBool("Walk", false);
-                                UI_Canvas.I.ActiveTalkWindow();
+                                Attack();
                             }
 
-                            if (UI_Canvas.I._closeKey)
+                            if (Input.GetMouseButton(1))
                             {
-                                _closeObject.GetComponent<Key>().ActiveObject(gameObject);
+                                Defand();
                             }
 
-                            if (UI_Canvas.I._closeTreasureBox || UI_Canvas.I._closeRock)
+                            if (Input.GetKeyDown(KeyCode.Space))
                             {
-                                InteractionObject();
+                                Jump();
                             }
                         }
                     }
 
-                    if (Input.GetKeyDown(KeyCode.Q))
+                    if (Input.GetMouseButtonUp(1))
                     {
-                        UI_Canvas.I.PlayerUI(UI_Canvas.I._myQuest, ref UI_Canvas.I._questActive);
+                        NotDefand();
                     }
 
-                    if (Input.GetKeyDown(KeyCode.I))
+                    if (_hp <= 0)
                     {
-                        UI_Canvas.I.PlayerUI(UI_Canvas.I._myInventory, ref UI_Canvas.I._inventoryActive);
+                        Die();
                     }
 
-                    if (Input.GetKeyDown(KeyCode.C))
+                    if (Input.GetKeyDown(KeyCode.F))
                     {
-                        UI_Canvas.I.PlayerUI(UI_Canvas.I._myState, ref UI_Canvas.I._StateActive);
+                        if (UI_Canvas.I._closeNPC)
+                        {
+                            _myAni.SetBool("Walk", false);
+                            UI_Canvas.I.ActiveTalkWindow();
+                        }
+
+                        if (UI_Canvas.I._closeKey)
+                        {
+                            _closeObject.GetComponent<Key>().ActiveObject(gameObject);
+                        }
+
+                        if (UI_Canvas.I._closeTreasureBox || UI_Canvas.I._closeRock)
+                        {
+                            InteractionObject();
+                        }
                     }
                 }
 
-                if (Input.GetKeyDown(KeyCode.Escape))
+                if (Input.GetKeyDown(KeyCode.Q))
                 {
-                    if (!UI_Canvas.I._menuBool)
-                    {
-                        UI_Canvas.I.OpenMenu();
-                    }
+                    UI_Canvas.I.PlayerUI(UI_Canvas.I._myQuest, ref UI_Canvas.I._questActive);
+                }
 
-                    else if (UI_Canvas.I._menuBool)
-                    {
-                        UI_Canvas.I.CloseMenu();
-                    }
+                if (Input.GetKeyDown(KeyCode.I))
+                {
+                    UI_Canvas.I.PlayerUI(UI_Canvas.I._myInventory, ref UI_Canvas.I._inventoryActive);
+                }
+
+                if (Input.GetKeyDown(KeyCode.C))
+                {
+                    UI_Canvas.I.PlayerUI(UI_Canvas.I._myState, ref UI_Canvas.I._StateActive);
                 }
             }
+
+            if (Input.GetKeyDown(KeyCode.Escape))
+            {
+                if (!UI_Canvas.I._menuBool)
+                {
+                    UI_Canvas.I.OpenMenu();
+                }
+
+                else if (UI_Canvas.I._menuBool)
+                {
+                    UI_Canvas.I.CloseMenu();
+                }
+            }
+
             if (Input.GetKeyDown(KeyCode.R))
             {
                 if (GameManager.I._gameClear || _die)
@@ -209,18 +207,12 @@ namespace josoomin
 
             Vector3 moveDirection = (cameraForward * dir.z + Camera.main.transform.right * dir.x).normalized;
 
-            //transform.Translate(dir * _speed * Time.deltaTime);
-
             transform.forward = Vector3.Lerp(transform.forward, moveDirection, _rotateSpeed * Time.deltaTime);
 
             if (Mathf.Sign(transform.forward.x) != Mathf.Sign(dir.x) || Mathf.Sign(transform.forward.z) != Mathf.Sign(dir.z))
             {
                 transform.Rotate(0, 1, 0);
             }
-
-            //transform.forward = Vector3.Lerp(transform.forward, dir, _rotateSpeed * Time.deltaTime);
-
-            //_myRigidbody.MovePosition(gameObject.transform.position + dir * _speed * Time.deltaTime);
 
             if (dir.z >= 0)
                 transform.Translate(Vector3.forward * Time.deltaTime * _speed * dir.z);
