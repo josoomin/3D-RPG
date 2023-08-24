@@ -63,9 +63,6 @@ namespace josoomin
                 case "ATTACK":
                     _monsterSound.clip = _attackClip;
                     break;
-                //case "HIT":
-                //    _monsterSound.clip = _hitClip;
-                //    break;
                 case "DIE":
                     _monsterSound.clip = _deathClip;
                     break;
