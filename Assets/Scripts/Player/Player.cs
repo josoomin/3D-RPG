@@ -90,9 +90,7 @@ namespace josoomin
                         }
                         else
                         {
-                            _stepSound.Stop();
-                            _myAni.SetBool("Walk", false);
-                            _myRigidbody.angularVelocity = new Vector3(0, 0, 0);
+                            StopWalk();
                         }
 
                         if (_plane)
@@ -128,7 +126,7 @@ namespace josoomin
                     {
                         if (UI_Canvas.I._closeNPC)
                         {
-                            _myAni.SetBool("Walk", false);
+                            StopWalk();
                             UI_Canvas.I.ActiveTalkWindow();
                         }
 
@@ -146,16 +144,19 @@ namespace josoomin
 
                 if (Input.GetKeyDown(KeyCode.Q))
                 {
+                    StopWalk();
                     UI_Canvas.I.PlayerUI(UI_Canvas.I._myQuest, ref UI_Canvas.I._questActive);
                 }
 
                 if (Input.GetKeyDown(KeyCode.I))
                 {
+                    StopWalk();
                     UI_Canvas.I.PlayerUI(UI_Canvas.I._myInventory, ref UI_Canvas.I._inventoryActive);
                 }
 
                 if (Input.GetKeyDown(KeyCode.C))
                 {
+                    StopWalk();
                     UI_Canvas.I.PlayerUI(UI_Canvas.I._myState, ref UI_Canvas.I._StateActive);
                 }
             }
@@ -164,6 +165,7 @@ namespace josoomin
             {
                 if (!UI_Canvas.I._menuBool)
                 {
+                    StopWalk();
                     UI_Canvas.I.OpenMenu();
                 }
 
@@ -178,6 +180,13 @@ namespace josoomin
                 if (GameManager.I._gameClear || _die)
                     GameManager.I.ReStart();
             }
+        }
+
+        void StopWalk()
+        {
+            _stepSound.Stop();
+            _myAni.SetBool("Walk", false);
+            _myRigidbody.angularVelocity = new Vector3(0, 0, 0);
         }
 
         void PlaySound(string action)
