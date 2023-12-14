@@ -337,21 +337,25 @@ namespace josoomin
             if (_openQuestTitle == "몬스터 퇴치" && GameManager.I._monsterList.Count == 0)
             {
                 ActiveText("500골드를 획득했습니다.");
-                _openQuest.SetActive(false);
-                _myQuestInfo.SetActive(false);
-                GameManager.I.ClearMonsterQuest();
+                CloseQuestWindow();
+                GameManager.I.ClearQuest(500);
             }
             else if (_openQuestTitle == "바위 부수기" && _breakRock)
             {
                 ActiveText("1000골드를 획득했습니다.");
-                _openQuest.SetActive(false);
-                _myQuestInfo.SetActive(false);
-                GameManager.I.ClearRockQuest();
+                CloseQuestWindow();
+                GameManager.I.ClearQuest(1000);
             }
             else
             {
                 ActiveText("아직 퀘스트를 완료하지 않았습니다.");
             }
+        }
+
+        void CloseQuestWindow()
+        {
+            _openQuest.SetActive(false);
+            _myQuestInfo.SetActive(false);
         }
 
         public void PlayerUI(GameObject Chan, ref bool Set) 

@@ -51,14 +51,15 @@ namespace josoomin
 
             _whiteParticleSystem.SetActive(false);
 
-            //��� ���� ����Ʈ �迭�� �߰�
+            #region 스폰 포인트 게임 오브젝트를 배열에 추가
             for (int i = 0; i < _sponePoints.transform.childCount; i++)
             {
                 GameObject _Point = _sponePoints.transform.GetChild(i).gameObject;
                 _sponePointList.Add(_Point);
             }
+            #endregion
 
-            //���� �� ���� ����Ʈ�� ����
+            #region 몬스터를 각각의 스폰 포인트에 배치 후 이름 지정
             for (int i = 0; i < _sponePointList.Count; i++)
             {
                 if (_sponePointList[i].name != "KeySponePoint")
@@ -69,8 +70,9 @@ namespace josoomin
                     _monsterList.Add(_cloneMon);
                 }
             }
+            #endregion
 
-            //�ʿ� ������Ʈ �ڽİ�ü �迭�� �߰�
+            #region 게임 오브젝트를 게임오브젝트 배열에 추가
             for (int i = 0; i < _mapObject.transform.childCount; i++)
             {
                 GameObject _Item = _mapObject.transform.GetChild(i).gameObject;
@@ -81,6 +83,7 @@ namespace josoomin
                     _mapObjectList[i].SetActive(false);
                 }
             }
+            #endregion
 
             _gameClearUI.SetActive(false);
             _gameOverUI.SetActive(false);
@@ -128,14 +131,9 @@ namespace josoomin
             }
         }
 
-        public void ClearMonsterQuest()
+        public void ClearQuest(int credit)
         {
-            _playerCscript._money += 500;
-        }
-
-        public void ClearRockQuest()
-        {
-            _playerCscript._money += 1000;
+            _playerCscript._money += credit;
         }
 
         public void ReStart()

@@ -336,14 +336,12 @@ namespace josoomin
         public void Defand()
         {
             _defand = true;
-            //_defandCol.enabled = true;
             _myAni.SetBool("Defand", true);
         }
 
         public void NotDefand()
         {
             _defand = false;
-            //_defandCol.enabled = false;
             _myAni.SetBool("Defand", false);
         }
 
