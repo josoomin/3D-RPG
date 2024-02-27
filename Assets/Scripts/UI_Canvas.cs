@@ -11,41 +11,42 @@ namespace josoomin
     {
         public static UI_Canvas I;
 
-        public GameObject _Setting;
+        public GameObject _Setting; // 세팅 메누
 
-        float _nowBGMLevel;
-        float _nowSFXLevel;
+        float _nowBGMLevel; // 현재 배경음 레밸
+        float _nowSFXLevel; // 현재 효과음 레밸
 
-        public Slider _BGMSlider;
-        public Slider _SFXSlider;
+        public Slider _BGMSlider; // 배경음 조절 슬라이더
+        public Slider _SFXSlider; // 효과음 조절 슬라이더
 
-        public Text _BGMText;
-        public Text _SFXText;
+        public Text _BGMText; // 현재 배경음 지수를 표시하는 텍스트
+        public Text _SFXText; // 현재 효과음 지수를 표시하는 텍스트
 
-        public GameObject _player;
-        Player _playerScript;
+        public GameObject _player; // 플레이어 게임 오브젝트
+        Player _playerScript; // 플레이어 게임 오브젝트 스크립트
 
-        public bool _breakRock;
+        public bool _breakRock; // 돌이 부숴졌는지 판단
 
-        Text _alarmText;
-        Text _fKeyText;
+        Text _alarmText; // 화면 상단 중앙 알림 텍스트
+        Text _fKeyText; // 화면 중앙 하단 상호작용 가능 텍스트
 
-        public Text _HPText;
-        public Text _ATKText;
-        public Text _DEFText;
-        public Text _SPDText;
+        public Text _HPText; // 상태창 체력 표시 텍스트
+        public Text _ATKText; // 상태창 공격력 표시 텍스트
+        public Text _DEFText; // 상태창 방어력 표시 텍스트
+        public Text _SPDText; // 상태창 스피드 표시 텍스트
 
-        int _nowMoney;
-        float _nowHP;
-        float _nowATK;
-        float _nowDEF;
-        float _nowSPD;
+        // 능력치 적용 버튼을 누르기 전 값을 저장하기 위한 값
+        int _nowMoney; // 현재 보유 돈
+        float _nowHP; // 현재 체력
+        float _nowATK; // 현재 공격력
+        float _nowDEF; // 현재 방어력
+        float _nowSPD; // 현재 스피드
 
-        GameObject _fKey;
-        GameObject _talkWindow;
+        GameObject _fKey; // 상호작용키 게임 오브젝트
+        GameObject _talkWindow; // 대화창 게임 오브젝트
 
-        GameObject _NPCQuestList;
-        GameObject _NPCQuestInfoWindow;
+        GameObject _NPCQuestList; // NPC 퀘스트 리스트
+        GameObject _NPCQuestInfoWindow; // 퀘스트 정보 표시창
 
         public GameObject _myQuest; // 플레이어의 퀘스트 화면
         public bool _questActive; // 퀘스트 창이 켜져있는지
@@ -60,7 +61,7 @@ namespace josoomin
 
         public GameObject _itemIcons; // 아이템 아이콘들
 
-        public Text _moneyText;
+        public Text _moneyText; // 내 돈
         public Slider _hpBar; // 내 채력바 UI
         public Text _hpText; // 내 체력 표시 택스트
 
@@ -74,13 +75,13 @@ namespace josoomin
 
         public bool _playerUIActive; // 플레이어의 UI 창이 켜져 있는지
 
-        public Material _alarmTextMaterial;
+        public Material _alarmTextMaterial; // 알람 텍스트 마테리얼
 
-        public bool _closeNPC;
-        public bool _closeKey;
-        public bool _closeTreasureBox;
-        public bool _closeRock;
-        public bool _menuBool;
+        public bool _closeNPC; // 현재 NPC와 붙어있는지 확인하기 위한 값
+        public bool _closeKey; // 현재 열쇠와 닿아있는지 판단하기 위한 값
+        public bool _closeTreasureBox; // 현재 보물상자와 닿아있는지 판단하기 위한 값
+        public bool _closeRock; // 현재 바위와 닿아있는지 판단하기 위한 값
+        public bool _menuBool; // 현재 메뉴창이 켜져있는지 판단하기 위한 값
 
         public bool _talk; // 현재 NPC와 대화중인지
 
@@ -94,6 +95,7 @@ namespace josoomin
 
         private Color originalColor; // 물체의 원래 색상을 저장할 변수
 
+        // UI_Canvas 게임오브젝트 싱글톤
         private void Awake()
         {
             I = this;
@@ -101,8 +103,9 @@ namespace josoomin
 
         void Start()
         {
+            // 각각의 inspector값을 가져온다.
             _playerScript = _player.GetComponent<Player>();
-            _fKey = transform.Find("TalkKey").gameObject;
+            _fKey = transform.Find("TalkKey").gameObject; 
             _talkWindow = transform.Find("TalkWindow").gameObject;
             _NPCQuestList = transform.Find("QuestListWindow").gameObject;
             _NPCQuestInfoWindow = transform.Find("QuestWindow").gameObject;
@@ -117,6 +120,7 @@ namespace josoomin
             _menu = transform.Find("UI_Menu").gameObject;
             originalColor = _alarmText.material.color;
 
+            // 실행시 불필요한 게임오브젝트를 false로 초기화
             _fKey.SetActive(false);
             _talkWindow.SetActive(false);
             _NPCQuestList.SetActive(false);
@@ -127,16 +131,19 @@ namespace josoomin
             _myState.SetActive(false);
             _itemIcons.SetActive(false);
             _menu.SetActive(false);
-            _menuBool = false;
+            _bossHpBar.gameObject.SetActive(false);
             _Setting.SetActive(false);
+
+            // 모든 Bool값을 false로 초기화
+            _menuBool = false;
             _questActive = false;
             _inventoryActive = false;
             _StateActive = false;
             _playerUIActive = false;
             _alarmText.enabled = false;
             _breakRock = false;
-            _bossHpBar.gameObject.SetActive(false);
 
+            // 퀘스트 게임오브젝트를 가져와 게임오브젝트 리스트에 추가
             for (int i = 0; i < _contents.transform.childCount; i++)
             {
                 GameObject _Quest = _contents.transform.GetChild(i).gameObject;
@@ -146,20 +153,25 @@ namespace josoomin
 
         private void Update()
         {
+            // 현재 체력바와 텍스트를 프레임마다 초기화
             _hpBar.value = ((_playerScript._hp / _playerScript._maxHp) * 100);
             _hpText.text = (_playerScript._hp + "/" + _playerScript._maxHp);
 
+            // 보스 체력바를 프레임마다 초기화
             _bossHpBar.value = ((_Boss._hp / _Boss._maxHP) * 100);
 
+            // 현재 돈, 체력, 공격력, 방여력, 스피드를 프레임마다 초기화
             _moneyText.text = _playerScript._money.ToString();
             _HPText.text = _playerScript._maxHp.ToString();
             _ATKText.text = _playerScript._ATK.ToString();
             _DEFText.text = _playerScript._DEF.ToString();
             _SPDText.text = _playerScript._speed.ToString();
 
+            // 현재 배경음과 효과음 텍스트를 슬라이더 값에 따라 프레임마다 초기화
             _BGMText.text = Mathf.FloorToInt(_BGMSlider.value * 100).ToString();
             _SFXText.text = Mathf.FloorToInt(_SFXSlider.value * 100).ToString();
 
+            // 현재 대화UI, 인벤토리UI, 퀘스트UI, 상태창UI, 메뉴UI가 켜져있으면 다른 UI는 킬 수 없게 불 값을 초기화
             if (_talk || _inventoryActive || _questActive || _StateActive || _menuBool)
             {
                 _playerUIActive = true;
@@ -170,6 +182,7 @@ namespace josoomin
             }
         }
 
+        // 현재 닿고 있는 맵 오브젝트에 따라 상호작용 텍스트 및 닿은 오브젝트의 bool값 초기화 및 텍스트 표시
         public void CloseMapObject(string _object, bool Player)
         {
             if (Player == true)
@@ -201,6 +214,7 @@ namespace josoomin
                 _fKey.SetActive(true);
             }
 
+            // 닿은 오브젝트 없으면 전부 false로 초기화
             else if (Player == false)
             {
                 _fKey.SetActive(false);
@@ -211,6 +225,7 @@ namespace josoomin
             }
         }
 
+        // 상단 텍스트 표시
         public void ActiveText(string text)
         {
             _alarmText.text = text;
@@ -219,6 +234,7 @@ namespace josoomin
             StartCoroutine(FadeAway());
         }
 
+        // 상단 텍스트 표시 됬다 서서히 사라지게 함
         IEnumerator FadeAway()
         {
             var color = _alarmText.color;
@@ -249,12 +265,14 @@ namespace josoomin
             _alarmText.enabled = false;
         }
 
+        // 대화창 활성화
         public void ActiveTalkWindow()
         {
             _talk = true;
             _talkWindow.SetActive(true);
         }
 
+        // 대화창 비활성화
         public void DeActiveAllWindow()
         {
             _talk = false;
@@ -263,11 +281,13 @@ namespace josoomin
             _NPCQuestInfoWindow.SetActive(false);
         }
 
+        // NPC가 보유중인 퀘스트 리스트 활성화
         public void ActiveNPCQuestList()
         {
             _NPCQuestList.SetActive(true);
         }
 
+        // 퀘스트 정보창 활성화
         public void ActiveQuestInfo()
         {
             GameObject _clickObject = EventSystem.current.currentSelectedGameObject;
@@ -287,6 +307,7 @@ namespace josoomin
             }
         }
 
+        // 누르는 퀘스트의 종류에 따라 정보창 내용 변경
         void SetInfo(GameObject Click, Text Title, Text Info)
         {
             if (Click.tag == "QuestButton")
@@ -309,6 +330,7 @@ namespace josoomin
             }
         }
 
+        // 퀘스트 수락시 NPC 퀘스트리스트에서 제외 후 플레이어 퀘스트 보유 리스트에 추가
         public void QuestAccept()
         {
             GameObject _MyQuestPannel = _myQuest.transform.Find("Scroll View/Viewport/Content").gameObject;
@@ -327,11 +349,13 @@ namespace josoomin
             _NPCQuestInfoWindow.SetActive(false);
         }
 
+        // 퀘스트 거절 시 퀘스트 정보창 비활성화
         public void QuestRefuse()
         {
             _NPCQuestInfoWindow.SetActive(false);
         }
 
+        // 퀘스트 완료 시 중앙 상단에 보상 텍스트 표시 및 보상 지급
         public void QuestComplete()
         {
             if (_openQuestTitle == "몬스터 퇴치" && GameManager.I._monsterList.Count == 0)
@@ -352,14 +376,17 @@ namespace josoomin
             }
         }
 
+        // 플레이어 퀘스트 창 비활성화
         void CloseQuestWindow()
         {
             _openQuest.SetActive(false);
             _myQuestInfo.SetActive(false);
         }
 
+        // 입려키에 따라 UI 활성화 및 비활성화
         public void PlayerUI(GameObject Chan, ref bool Set) 
         {
+            // 열린 UI가 상태창인 경우 현재 능력치를 상태창에 적용
             if (Chan.name == "CharacterStats")
             {
                 _nowMoney = _playerScript._money;
@@ -392,6 +419,7 @@ namespace josoomin
             }
         }
 
+        // 상태창 +버튼 누를시 체력, 공격력, 방어력, 스피드, 돈 텍스트 변경
         public void StateUp()
         {
             GameObject _clickObject = EventSystem.current.currentSelectedGameObject;
@@ -418,6 +446,7 @@ namespace josoomin
             }
         }
 
+        // 상태창 +버튼 누를시 체력, 공격력, 방어력, 스피드, 돈 텍스트 변경
         public void StateDown()
         {
             GameObject _clickObject = EventSystem.current.currentSelectedGameObject;
@@ -429,32 +458,39 @@ namespace josoomin
                     && _nowHP < _playerScript._maxHp)
                 {
                     _playerScript._maxHp -= 10;
-                    _playerScript._money += 100;
+                    ReturnMoney();
                 }
                 else if (_clickObject.transform.parent.name == "ATK" 
                     && _playerScript._ATK > 1 
                     && _nowATK < _playerScript._ATK)
                 {
                     _playerScript._ATK -= 1;
-                    _playerScript._money += 100;
+                    ReturnMoney();
                 }
                 else if (_clickObject.transform.parent.name == "DEF" 
                     && _playerScript._DEF > 0 
                     && _nowDEF < _playerScript._DEF)
                 {
                     _playerScript._DEF -= 1;
-                    _playerScript._money += 100;
+                    ReturnMoney();
                 }
                 else if (_clickObject.transform.parent.name == "SPD" 
                     && _playerScript._speed > 1 
                     && _nowSPD < _playerScript._speed)
                 {
                     _playerScript._speed -= 1;
-                    _playerScript._money += 100;
+                    ReturnMoney();
                 }
             }
         }
 
+        // -버튼 누를 시 돈 반환
+        void ReturnMoney()
+        {
+            _playerScript._money += 100;
+        }
+
+        // 상태창 체력, 공격력, 방어력, 스피드, 돈 변환값 적용
         public void StateApplyButton()
         {
             if (_nowHP != _playerScript._maxHp)
@@ -469,6 +505,7 @@ namespace josoomin
             _nowSPD = _playerScript._speed;
         }
 
+        // 상태창 체력, 공격력, 방어력, 스피드, 돈 변환값 원상복귀
         public void StateCancleButton()
         {
             _playerScript._money = _nowMoney;
@@ -478,6 +515,7 @@ namespace josoomin
             _playerScript._speed = _nowSPD;
         }
 
+        // 메뉴창 활성화
         public void OpenMenu()
         {
             _menuBool = true;
@@ -485,14 +523,16 @@ namespace josoomin
             Time.timeScale = 0;
         }
 
+        // 메뉴창 비활성화
         public void CloseMenu()
         {
             _menuBool = false;
             _menu.SetActive(false);
             Time.timeScale = 1;
-            CloseOption();
+            CloseSetting();
         }
 
+        // 세팅창 활성화 및 현재 배경음과 효과음 값 슬라이더에 적용
         public void OpenSetting()
         {
             _nowBGMLevel = GameManager.I._BGM.volume;
@@ -504,6 +544,7 @@ namespace josoomin
             _Setting.SetActive(true);
         }
 
+        // 변경된 세팅값 적용
         public void SetSound()
         {
             _nowBGMLevel = _BGMSlider.value;
@@ -512,21 +553,25 @@ namespace josoomin
             GameManager.I.SetSoundLevel(_nowBGMLevel, _nowSFXLevel);
         }
 
-        public void CloseOption()
+        // 세팅창 비활성화
+        public void CloseSetting()
         {
             _Setting.SetActive(false);
         }
 
+        // 게임 재시작 버튼
         public void RestartGame()
         {
             GameManager.I.ReStart();
         }
 
+        // 게임 종료 버튼
         public void ShutDown()
         {
             Application.Quit();
         }
 
+        // 3스테이지 진입 시 보스 체력바 UI 활성화
         public void BossHpOnOff(bool _b)
         {
             _bossHpBar.gameObject.SetActive(_b);

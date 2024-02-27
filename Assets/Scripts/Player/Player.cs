@@ -22,8 +22,6 @@ namespace josoomin
         public AudioClip _hitClip; // 맞을때 나는 소리
         public AudioClip _deathClip; // 죽을때 나는 소리
 
-        //public BoxCollider _defandCol; // 내 방패 콜라이더
-
         public float _hp; // 내 체력
         public float _maxHp; // 내 최대 체력
 
@@ -31,7 +29,7 @@ namespace josoomin
 
         public float _DEF; //방어력
 
-        public int _money;
+        public int _money; // 보유 돈
 
         public float _speed; // 내 이동 속도
         float _rotateSpeed = 100.0f; // 내 회전 속도

@@ -13,11 +13,13 @@ namespace josoomin
             I = this;
         }
 
-        public AudioSource _objectSound;
+        public AudioSource _objectSound; // 오브젝트 오디오소스
 
-        public AudioClip _keySound;
-        public AudioClip _boxSound;
-        public AudioClip _rockSound;
+        public AudioClip _keySound; // 열쇠 획득 효과음
+        public AudioClip _boxSound; // 보물상자 획득 효과음
+        public AudioClip _rockSound; // 바위 파괴 효과음
+
+        // 활성 오브젝트에 따라 효과음 재생
         public void PlaySound(string action)
         {
             switch (action)

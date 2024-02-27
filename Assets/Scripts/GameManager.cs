@@ -14,42 +14,40 @@ namespace josoomin
             I = this;
         }
 
-        public AudioSource _BGM;
+        public AudioSource _BGM; // 배경음 오디오소스
 
-        public AudioSource _objectSound;
-        public AudioSource _playerSound;
-        public AudioSource _playerstepSound;
-        public AudioSource _monsterSound;
-        public AudioSource _BossSound;
+        public AudioSource _objectSound; // 오브젝트 효과음 오디오 소스
+        public AudioSource _playerSound; // 플레이어 효과음 오디오 소스
+        public AudioSource _playerstepSound; // 플레이어 발소리 효과음 오디오 소스
+        public AudioSource _monsterSound; // 몬스터 효과음 오디오 소스
+        public AudioSource _BossSound; // 보스 효과음 오디오 소스
 
-        public GameObject _player;
-        Player _playerCscript;
+        public GameObject _player; // 플레이어 게임 오브젝트
+        Player _playerCscript; // 플레이어 스크립트
 
-        public GameObject _mapObject;
-        public List<GameObject> _mapObjectList;
+        public GameObject _mapObject; // 맵 게임오브젝트
+        public List<GameObject> _mapObjectList; // 맵 게임 오브젝트 리스트
+         
+        public GameObject _sponePoints; // 몬스터 스폰 포인트 게임오브젝트
+        public List<GameObject> _sponePointList; // 몬스터 스폰 포인트 리스트
 
-        public GameObject _sponePoints;
-        public List<GameObject> _sponePointList;
+        public GameObject _monster; // 몬스터 게임오브젝트 
+        public List<GameObject> _monsterList; // 몬스터 게임 오브젝트 리스트
 
-        public GameObject _monster;
-        public List<GameObject> _monsterList;
+        public GameObject _whiteParticleSystem; // 열쇠 파티클 게임 오브젝트
 
-        public GameObject _whiteParticleSystem;
+        public int _breakRockCount; // 부순 바위의 갯수
 
-        public int _breakRockCount;
+        public GameObject _gameOverUI; // 게임오버 UI
 
-        public GameObject _gameOverUI;
-
-        public GameObject _gameClearUI;
-        public bool _gameClear;
+        public GameObject _gameClearUI; // 게임클리어 UI
+        public bool _gameClear; // 게임 클리어 판단값
 
         void Start()
         {
-            Application.targetFrameRate = 60;
+            Application.targetFrameRate = 60; // 게임 60프레임 고정
 
             _playerCscript = _player.GetComponent<Player>();
-
-            _whiteParticleSystem.SetActive(false);
 
             #region 스폰 포인트 게임 오브젝트를 배열에 추가
             for (int i = 0; i < _sponePoints.transform.childCount; i++)
@@ -85,11 +83,14 @@ namespace josoomin
             }
             #endregion
 
+            // 실행시 불필요한 게임오브젝트를 false로 초기화
+            _whiteParticleSystem.SetActive(false);
             _gameClearUI.SetActive(false);
             _gameOverUI.SetActive(false);
             _gameClear = false;
         }
 
+        // 사운드 슬라이더 값에 따른 배경음, 효과음 값 적용
         public void SetSoundLevel(float BGMLevel, float SFXLevel)
         {
             _BGM.volume = BGMLevel;
@@ -106,6 +107,7 @@ namespace josoomin
             }
         }
 
+        // 몬스터 전부 처치시 열쇠를 필드에 드롭
         public void DropKey()
         {
             for (int i = 0; i < _mapObjectList.Count; i++)
@@ -131,23 +133,27 @@ namespace josoomin
             }
         }
 
+        // 퀘스트 클리어 시 돈 추가
         public void ClearQuest(int credit)
         {
             _playerCscript._money += credit;
         }
 
+        // 게임 재시작
         public void ReStart()
         {
             SceneManager.LoadScene(1);
             Time.timeScale = 1;
         }
 
+        // 게임 클리어 UI 활성화
         public void GameClear()
         {
             _gameClear = true;
             _gameClearUI.SetActive(true);
         }
 
+        // 게임 오버 UI 활성화
         public void GameOver()
         {
             _gameOverUI.SetActive(true);
