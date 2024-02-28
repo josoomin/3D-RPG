@@ -9,7 +9,7 @@ namespace josoomin
         public Transform targetTransform; // 플레이어 위치값
         public Vector3 CameraOffset; // 카메라의 Vector3
 
-        private float xRotate, yRotate, xRotateMove, yRotateMove; // 
+        private float xRotate, yRotate, xRotateMove, yRotateMove; // 카메라 회전값
         public float rotateSpeed = 500.0f; // 카메라 회전 속도
         int _xMaxValue = -10; // 카메라 올려다 보는 값 최대값
 

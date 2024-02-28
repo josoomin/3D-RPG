@@ -7,7 +7,7 @@ namespace josoomin
 {
     public class Player : MonoBehaviour
     {
-        public GameObject _camera;
+        public GameObject _camera; // 카메라 게임오브젝트
 
         public GameObject _closeObject; // 닿고 있는 오브젝트
         public GameObject _reSponePoint; // 떨어지면 다시 스폰되는 위치
@@ -48,14 +48,14 @@ namespace josoomin
 
         Animator _myAni; // 내 애니메이터
 
-        private Vector3 dir = Vector3.zero;
+        private Vector3 dir = Vector3.zero; // 캐릭터 이동 값
 
         void Start()
         {
+            // 각 기본값 초기화
             _myRigidbody = GetComponent<Rigidbody>();
             _myAni = GetComponent<Animator>();
             _attackCol.enabled = false;
-            //_defandCol.enabled = false;
             _die = false;
             _maxHp = 100;
             _hp = _maxHp;
@@ -68,9 +68,9 @@ namespace josoomin
 
         void Update()
         {
-            dir.x = Input.GetAxis("Horizontal");
-            dir.z = Input.GetAxis("Vertical");
-            dir.Normalize();
+            dir.x = Input.GetAxis("Horizontal"); // 좌 우 이동
+            dir.z = Input.GetAxis("Vertical"); // 앞 뒤 이동
+            dir.Normalize(); // 대각선 이동 속도를 위한 백터의 정규화
 
             if (!_die && !GameManager.I._gameClear)
             {
@@ -78,6 +78,7 @@ namespace josoomin
                 {
                     if (!_attack && !_defand)
                     {
+                        // 방향키 입력이 있으면 캐릭터 이동
                         if (dir != Vector3.zero)
                         {
                             if (!_stepSound.isPlaying && _plane)
@@ -86,11 +87,13 @@ namespace josoomin
                             Move();
                             _myAni.SetBool("Walk", true);
                         }
+                        // 방향키 입력이 없으면 캐릭터 정지
                         else
                         {
                             StopWalk();
                         }
 
+                        // 캐릭터가 바닥에 닿아 있을 때만 공격, 방어, 이동 가능
                         if (_plane)
                         {
                             if (Input.GetMouseButtonDown(0))
@@ -110,16 +113,13 @@ namespace josoomin
                         }
                     }
 
+                    // 왼쪽 마우스 놓으면 방어 취소
                     if (Input.GetMouseButtonUp(1))
                     {
                         NotDefand();
                     }
 
-                    if (_hp <= 0)
-                    {
-                        Die();
-                    }
-
+                    // NPC, 열쇠, 보물상자 상호작용
                     if (Input.GetKeyDown(KeyCode.F))
                     {
                         if (UI_Canvas.I._closeNPC)
@@ -138,20 +138,29 @@ namespace josoomin
                             InteractionObject();
                         }
                     }
+
+                    // 죽음
+                    if (_hp <= 0)
+                    {
+                        Die();
+                    }
                 }
 
+                // 퀘스트창
                 if (Input.GetKeyDown(KeyCode.Q))
                 {
                     StopWalk();
                     UI_Canvas.I.PlayerUI(UI_Canvas.I._myQuest, ref UI_Canvas.I._questActive);
                 }
 
+                // 인벤토리
                 if (Input.GetKeyDown(KeyCode.I))
                 {
                     StopWalk();
                     UI_Canvas.I.PlayerUI(UI_Canvas.I._myInventory, ref UI_Canvas.I._inventoryActive);
                 }
 
+                // 스텟창
                 if (Input.GetKeyDown(KeyCode.C))
                 {
                     StopWalk();
@@ -159,6 +168,7 @@ namespace josoomin
                 }
             }
 
+            // 메뉴창
             if (Input.GetKeyDown(KeyCode.Escape))
             {
                 if (!UI_Canvas.I._menuBool)
@@ -173,6 +183,7 @@ namespace josoomin
                 }
             }
 
+            // 재시작
             if (Input.GetKeyDown(KeyCode.R))
             {
                 if (GameManager.I._gameClear || _die)
@@ -180,6 +191,7 @@ namespace josoomin
             }
         }
 
+        // 걷는 도중 애니메이션, 효과음, 미끄러짐을 동작을 방지하기 위한 함수
         void StopWalk()
         {
             _stepSound.Stop();
@@ -187,6 +199,7 @@ namespace josoomin
             _myRigidbody.angularVelocity = new Vector3(0, 0, 0);
         }
 
+        // 플레이어 효과음 재생
         void PlaySound(string action)
         {
             switch (action)
@@ -207,6 +220,7 @@ namespace josoomin
             _playerSound.Play();
         }
 
+        // 카메라 방향과 조작키에 따른 캐릭터 이동
         public void Move()
         {
             Vector3 cameraForward = Camera.main.transform.forward;
@@ -232,6 +246,7 @@ namespace josoomin
                 transform.Translate(Vector3.back * Time.deltaTime * _speed * dir.x);
         }
 
+        // 점프
         public void Jump()
         {
             PlaySound("JUMP");
@@ -239,6 +254,7 @@ namespace josoomin
             _myRigidbody.AddForce(Vector3.up * _jumppower, ForceMode.Impulse);
         }
 
+        // 추락 시 캐릭터 리스폰
         private void OnCollisionEnter(Collision collision)
         {
             if (collision.gameObject.CompareTag("GetOffPoint"))
@@ -247,6 +263,7 @@ namespace josoomin
             }
         }
 
+        // 캐릭터가 땅에 닿아 있는지 판별
         void OnCollisionStay(Collision collision)
         {
             if (collision.gameObject.CompareTag("Plane"))
@@ -265,6 +282,7 @@ namespace josoomin
             }
         }
 
+        // 캐릭터가 땅에 안 닿아 있는지 판별
         private void OnCollisionExit(Collision collision)
         {
             if (collision.gameObject.CompareTag("Plane"))
@@ -273,6 +291,7 @@ namespace josoomin
             }
         }
 
+        // 상호 작용 결과에 따라 중앙 상단에 매세지 표시
         void InteractionObject()
         {
             if (_closeObject.name == "TreasureBox")
@@ -317,6 +336,7 @@ namespace josoomin
             }
         }
 
+        // 공격 시 검 콜라이더 활성화
         public void Attack()
         {
             PlaySound("ATTACK");
@@ -325,24 +345,28 @@ namespace josoomin
             _myAni.SetTrigger("Attack");
         }
 
+        // 공격 종료 시 검 콜라이더 비활성화
         public void NotAttack()
         {
             _attack = false;
             _attackCol.enabled = false;
         }
-
+        
+        // 방어
         public void Defand()
         {
             _defand = true;
             _myAni.SetBool("Defand", true);
         }
 
+        // 방어 종료
         public void NotDefand()
         {
             _defand = false;
             _myAni.SetBool("Defand", false);
         }
 
+        // 데미지 받음
         public void TakeDamage(float Damage)
         {
             PlaySound("HIT");
@@ -369,12 +393,14 @@ namespace josoomin
             }
         }
 
+        // 리스폰
         void PlayerReSpone()
         {
             TakeDamage(10);
             transform.position = _reSponePoint.transform.position;
         }
 
+        // 사망
         public void Die()
         {
             GameManager.I.GameOver();

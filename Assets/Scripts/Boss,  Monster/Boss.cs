@@ -6,49 +6,48 @@ namespace josoomin
 {
     public class Boss : MonoBehaviour
     {
-        public Transform _firePoint;
+        public Transform _firePoint; // È­¿° ¹ß»ç ÁöÁ¡
 
-        public GameObject _fireBall;
-        public List<GameObject> _fireBallList;
-        public Transform _fierPool;
+        public GameObject _fireBall; // È­¿°±¸
+        public List<GameObject> _fireBallList; // È­¿°±¸ ¸®½ºÆ®
+        public Transform _fierPool; // È­¿°±¸ °ÔÀÓ ¿ÀºêÁ§Æ® Ç®¸µ À§Ä¡
 
-        Rigidbody _myRigidbody; // ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ùµï¿½
-        Transform target; // ï¿½Ã·ï¿½ï¿½Ì¾ï¿½
-        Animator _myAni; // ï¿½ï¿½ ï¿½Ö´Ï¸ï¿½ï¿½ï¿½ï¿½ï¿½
+        Rigidbody _myRigidbody; // º¸½º ¸®Áöµå ¹Ùµğ
+        Transform target; // °ø°İ Å¸°Ù(ÇÃ·¹ÀÌ¾î)
+        Animator _myAni; // º¸½º ¾Ö´Ï¸ŞÀÌÅÍ
 
-        public AudioSource _bossSound; // ï¿½ï¿½ï¿½ï¿½ ï¿½Ò¸ï¿½ 
+        public AudioSource _bossSound; // º¸½º »ç¿îµå¼Ò½º
 
-        public AudioClip _attackClip1; // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ò¸ï¿½
-        public AudioClip _attackClip2; // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ò¸ï¿½
-        public AudioClip _deathClip; // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ò¸ï¿½
+        public AudioClip _attackClip1; // ±ÙÁ¢ °ø°İ »ç¿îµå
+        public AudioClip _attackClip2; // ¿ø°Å¸® °ø°İ »ç¿îµå
+        public AudioClip _deathClip; // º¸½º »ç¸Á »ç¿îµå
 
-        public BoxCollider _myAttackTrigger; // ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½İ¶ï¿½ï¿½Ì´ï¿½
-        float _attackLange; // ï¿½ï¿½ ï¿½ï¿½ï¿½İ½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
-        float _shortAttack = 2f;
-        float _longAttack = 10f;
+        public BoxCollider _myAttackTrigger; // º¸½º ±ÙÁ¢ °ø°İ Äİ¶óÀÌ´õ
+        float _attackLange; // °ø°İ °¡´É »ç°Å¸®
+        float _shortAttack = 2f; // ±ÙÁ¢ °ø°İ »ç°Å¸®
+        float _longAttack = 10f; // ¿ø°Å¸® °ø°İ »ç°Å¸®
 
-        public float _maxHP = 200;
-        public float _hp; // ï¿½ï¿½ Ã¼ï¿½ï¿½
+        public float _maxHP = 200; // º¸½º ½ÃÀÛ, ÃÖ´ë Ã¼·Â
+        public float _hp; // º¸½º ÇöÀç Ã¼·Â
 
-        bool _nowAttack; //í˜„ì¬ ê³µê²© ì¤‘ì¸ì§€
-        bool _takeDamage; // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ş´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
-        bool _die; // ï¿½ï¿½ï¿½ï¿½ ï¿½×¾ï¿½ï¿½ï¿½ï¿½ï¿½
+        bool _nowAttack; // º¸½º°¡ ÇöÀç °ø°İÇÒ ¼ö ÀÖ´Â »óÅÂÀÎÁö ÆÇº°
+        bool _takeDamage; // º¸½º µ¥¹ÌÁö ¹Ş´Â ¾Ö´Ï¸ŞÀÌ¼Ç ½ÇÇà Áß
+        bool _die; // »ç¸Á
 
-        int _pattern;
-        bool _setPattern;
+        int _pattern; // ±ÙÁ¢ °ø°İÀÎÁö ¿ø°Å¸® °ø°İÀÎÁö °ªÀ» ÀúÀå
+        bool _setPattern; // ÇöÀç ÆĞÅÏÀ» ÁöÁ¤ÇÒ ¼ö ÀÖ´Â »óÅÂÀÎÁö ÆÇº°
 
-        private Vector3 targetPosition;
+        private Vector3 targetPosition; // Å¸°Ù(ÇÃ·¹ÀÌ¾î) Æ÷Áö¼Ç
 
-        //ï¿½ß°ï¿½ ï¿½Óµï¿½
-        [SerializeField] [Range(1f, 4f)] float moveSpeed = 3f;
+        [SerializeField] [Range(1f, 4f)] float moveSpeed = 3f; //  ÀÌµ¿ ¼Óµµ
 
-        //ï¿½ï¿½ï¿½ï¿½ ï¿½Å¸ï¿½
-        [SerializeField] [Range(0f, 100f)] float contactDistance = 50f;
+        [SerializeField] [Range(0f, 100f)] float contactDistance = 50f; // ÇÃ·¹ÀÌ¾î ÃßÀû °Å¸®
 
         void Start()
         {
-            SetPattern();
+            SetPattern(); // °ø°İ ÆĞÅÏ ¼³Á¤
 
+            // È­¿°±¸ 100°³ »ı¼º ÈÄ ¿ÀºêÁ§Æ® Ç®¸µ
             for (int i = 0; i < 100; i++)
             {
                 GameObject _FB = Instantiate(_fireBall);
@@ -64,18 +63,22 @@ namespace josoomin
                 _setPattern = true;
             }
 
+
             _myRigidbody = GetComponent<Rigidbody>();
             target = GameObject.FindGameObjectWithTag("Player").GetComponent<Transform>();
             _myAni = GetComponent<Animator>();
+
+            // ±âº»°ª ÃÊ±âÈ­
+            _hp = _maxHP;
+
             _myAttackTrigger.enabled = false;
             _nowAttack = false;
-
-            _hp = _maxHP;
             _die = false;
         }
 
         void Update()
         {
+            // Á×Áö ¾Ê¾Ò°Å³ª µ¥¹ÌÁö ¹Ş´Â Áß ¾Æ´Ï¸é Å¸°Ù ÃßÀû
             if (!_die && !_takeDamage)
             {
                 FollowTarget();
@@ -87,6 +90,7 @@ namespace josoomin
             }
         }
 
+        // º¸½º »ç¿îµå Àç»ı
         void BossSound(string action)
         {
             switch (action)
@@ -104,6 +108,7 @@ namespace josoomin
             _bossSound.Play();
         }
 
+        // Å¸°Ù ÃßÀû
         void FollowTarget()
         {
             float distance = Vector3.Distance(transform.position, target.position);
@@ -130,6 +135,7 @@ namespace josoomin
             }
         }
 
+        // ÆĞÅÏ ·£´ı °áÁ¤
         void SetPattern()
         {
             if (_setPattern)
@@ -149,6 +155,7 @@ namespace josoomin
             }
         }
 
+        // °ø°İ
         void Attack(int patter)
         {
             _nowAttack = true;
@@ -167,12 +174,14 @@ namespace josoomin
             _myAni.SetBool("Run Forward", false);
         }
 
+        // º¸½º Äİ¶óÀÌ´õ È°¼ºÈ­
         void OnAttackCol()
         {
             BossSound("ATTACK1");
             _myAttackTrigger.enabled = true;
         }
 
+        // º¸½º Äİ¶óÀÌ´õ ºñÈ°¼ºÈ­
         void OffAttackCol()
         {
             _myAttackTrigger.enabled = false;
@@ -182,6 +191,7 @@ namespace josoomin
             SetPattern();
         }
 
+        // È­¿°±¸ ¹ß»ç
         void FireBall()
         {
             _fireBallList[0].SetActive(true);
@@ -193,18 +203,21 @@ namespace josoomin
             SetPattern();
         }
 
+        // Ãß¶ô»ç
         private void OnTriggerEnter(Collider other)
         {
             if (other.CompareTag("GetOffPoint"))
                 TakeDamage(200);
         }
 
+        // µ¥¹ÌÁö ¹ŞÀ½
         public void TakeDamage(float damage)
         {
             _hp -= damage;
             _myAttackTrigger.enabled = false;
         }
 
+        // »ç¸Á
         void Die()
         {
             BossSound("DIE");
@@ -213,6 +226,7 @@ namespace josoomin
             _myAttackTrigger.enabled = false;
         }
 
+        // »ç¸Á ¾Ö´Ï¸ŞÀÌ¼Ç ÈÄ ³ª ÀÚ½ÅÀ» ÆÄ±«
         void DestroyMe()
         {
             Destroy(gameObject);

@@ -6,10 +6,10 @@ namespace josoomin
 {
     public class FireBall : MonoBehaviour
     {
-        public Transform _boss;
+        public Transform _boss; // 보스 게임 오브젝트 윗치값
 
-        public Transform _firePool;
-        public List<GameObject> _fireBallList;
+        public Transform _firePool; // 화염구 오브젝트 풀링 위치
+        public List<GameObject> _fireBallList; // 화염구 풀링 피스트
 
         float _moveSpeed = 10f;
         float _fireBallDamage = 10f;
