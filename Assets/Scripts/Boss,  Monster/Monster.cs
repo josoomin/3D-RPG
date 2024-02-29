@@ -34,17 +34,22 @@ namespace josoomin
 
         void Start()
         {
+            // 게임오브젝트 가져오기
             _myRigidbody = GetComponent<Rigidbody>();
             target = GameObject.FindGameObjectWithTag("Player").GetComponent<Transform>();
             _myAni = GetComponent<Animator>();
-            _myAttackTrigger.enabled = false;
-
+            
+            // 체력 초기화
             _hp = 50f;
+
+            // 공격 콜라이더 및 사망 bool값 초기화
+            _myAttackTrigger.enabled = false;
             _die = false;
         }
 
         void Update()
         {
+            // 사망했거나 데미지 받는 중 아니면 타겟 추적 및 사망
             if (!_die && !_takeDamage)
             {
                 FollowTarget();
@@ -56,6 +61,7 @@ namespace josoomin
             }
         }
 
+        // 몬스터 사운드 재생
         void MonsterSound(string action)
         {
             switch (action)
@@ -70,6 +76,7 @@ namespace josoomin
             _monsterSound.Play();
         }
 
+        // 타겟(플레이어) 추적
         void FollowTarget()
         {
             float distance = Vector3.Distance(transform.position, target.position);
@@ -96,23 +103,27 @@ namespace josoomin
             }
         }
 
+        // 공격
         void Attack()
         {
             _myAni.SetTrigger("Attack 02");
             _myAni.SetBool("Run Forward", false);
         }
 
+        // 공격 콜라이더 활성화
         void OnAttackCol()
         {
             MonsterSound("ATTACK");
             _myAttackTrigger.enabled = true;
         }
 
+        // 공격 콜라이더 비활성화
         void OffAttackCol()
         {
             _myAttackTrigger.enabled = false;
         }
 
+        // 공격 콜라이더에 플레이어가 닿으면 플레이어에게 데미지
         private void OnTriggerEnter(Collider other)
         {
             Player _player = other.GetComponent<Player>();
@@ -126,6 +137,7 @@ namespace josoomin
                 TakeDamage(100);
         }
 
+        // 데미지 받음
         public void TakeDamage(float damage)
         {
             _hp -= damage;
@@ -134,11 +146,13 @@ namespace josoomin
             _myAttackTrigger.enabled = false;
         }
 
+        // 검이 통과하는 동안 연속 데미지 방지
         public void NoTakeDamage()
         {
             _takeDamage = false;
         }
 
+        // 사망
         void Die()
         {
             MonsterSound("DIE");
@@ -163,6 +177,7 @@ namespace josoomin
             }
         }
 
+        // 나 자시을 파괴
         void DestroyMe()
         {
             Destroy(gameObject);

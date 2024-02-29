@@ -7,7 +7,7 @@ namespace josoomin
 {
     public class Title_Canvas : MonoBehaviour
     {
-        public GameObject _htp;
+        public GameObject _htp; // 플레이 방법 UI
 
         private void Start()
         {

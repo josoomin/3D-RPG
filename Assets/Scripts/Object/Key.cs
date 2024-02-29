@@ -6,7 +6,9 @@ namespace josoomin
 {
     public class Key : MapObject
     {
-        public GameObject _key;
+        public GameObject _key; // 열쇠 아이템 게임오브젝트
+
+        // 열쇠 획득 사운드 재생 및 인벤토리에 추가
         public override void ActiveObject(GameObject Player)
         {
             ObjectSound.I.PlaySound("KEY");

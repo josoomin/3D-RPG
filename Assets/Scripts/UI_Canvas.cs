@@ -103,7 +103,7 @@ namespace josoomin
 
         void Start()
         {
-            // 각각의 inspector값을 가져온다.
+            // 각각의 inspector 및 게임오브젝트를 가져온다.
             _playerScript = _player.GetComponent<Player>();
             _fKey = transform.Find("TalkKey").gameObject; 
             _talkWindow = transform.Find("TalkWindow").gameObject;
